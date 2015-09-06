@@ -90,4 +90,4 @@ def logout(request):
 
 @api_view(['GET'])
 def box(request , id):
-    return render(request , "box.html" , {"box":boxes.find_one({"_id" : ObjectId(id)})})
+    return render(request , "box.html" , {"box":boxes.find_one({"_id" : ObjectId(id)}), "boxes":list(boxes.find())})
