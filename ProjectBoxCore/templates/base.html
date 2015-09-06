@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    {% load staticfiles %}
+
+        <script src="{% static "jquery.min.js" %}"></script>
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link href="{% static "core.css" %}" rel="stylesheet"/>
+        <script src="{% static "base.js" %}"></script>
+      <!-- use the font -->
+      <style>
+        body {
+          font-family: 'Roboto', sans-serif;
+        }
+      </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="title">Project box</h2>
+
+        <div class="user">
+            <h1>{{ user.get_username }}</h1>
+        </div>
+
+        <div class="boxes">
+            <h1>Boxes</h1>
+        </div>
+    </div>
+
+    <div class="side-panel">
+        <h1 class="side-panel-header">Boxes</h1>
+        {% load app_filters %}
+        {% for o in boxes %}
+            <div class="box" id="{{ o|get:"_id" }}">
+                <h1>{{ o.name }}</h1>
+                <h2>{{ o|get:"_data"|length }} items</h2>
+            </div>
+        {% endfor %}
+    </div>
+    {% block content %}
+
+    {% endblock content %}
+</body>
+</html>

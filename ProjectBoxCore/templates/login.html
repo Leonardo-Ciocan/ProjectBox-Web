@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+<html>
+<head lang="en">
+
+    {% load staticfiles %}
+    <script src="{% static "jquery.min.js" %}"></script>
+
+    <meta charset="UTF-8">
+    <title>
+        Login to app
+    </title>
+</head>
+<body>
+
+
+            {% block content %}
+                <div class="login-panel">
+                    <form action="" method="post">
+                        {% for field in form %}
+                            <p>{{ field.label }}</p>
+                            {{ field }}
+                        {% endfor %}
+
+                        <input type="submit" value="Submit" />
+                     </form>
+                </div>
+            {% endblock content %}
+
+</body>
+</html>

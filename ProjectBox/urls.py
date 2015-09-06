@@ -24,5 +24,7 @@ urlpatterns = [
     url(r'^api-token-auth/', token_views.obtain_auth_token),
     url(r'^box/', views.Box.as_view()),
     url(r'^user/', views.User.as_view()),
-
+    url(r'^login/', views.Login.as_view()),
+    url(r'^logout/', views.logout),
+    url(r'^b/(.*)/$', views.box),
 ]

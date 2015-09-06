@@ -39,7 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'ProjectBoxCore',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    "ProjectBoxCore.templatetags"
 )
 
 MIDDLEWARE_CLASSES = (
@@ -105,13 +106,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'templates'),
+    os.path.join(BASE_DIR, 'ProjectBoxCore/templates'),
 )
 
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
