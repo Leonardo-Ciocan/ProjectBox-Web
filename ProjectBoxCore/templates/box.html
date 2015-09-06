@@ -5,18 +5,22 @@
     <meta charset="UTF-8">
     <title> {{ box.name }}</title>
     {% block extra_head %}
-        <link href="/static/box.css" rel="stylesheet"/>
-
-        <script src="/static/box.js"></script>
         <script>
             {% load app_filters %}
             var box = {{ box|json|safe }};
+
         </script>
+        <link href="/static/box.css" rel="stylesheet"/>
+
+        <script src="/static/box.js" type="text/jsx"></script>
+
     {% endblock %}
 
 
 </head>
 <body>
+{% csrf_token %}
+
 {% block content %}
     <h1 class="box-title">{{ box.name }}</h1>
     <div id="container">

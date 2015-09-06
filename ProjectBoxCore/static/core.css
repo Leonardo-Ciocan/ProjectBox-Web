@@ -1,12 +1,13 @@
 .header{
     height:40px;
     width:100%;
-    position: static;
+    position: fixed;
     background: #2a7bff;
     -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.15);
     -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.15);
     box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.15);
-    position: relative;
+    z-index: 900;
+    top:0;
 }
 
 .user{
@@ -62,6 +63,7 @@ body{
     padding: 10px;
 }
 
+
 input[type="submit"]{
     background:#2a7bff ;
     padding: 10px;
@@ -91,6 +93,19 @@ form>input{
     -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.45);
     box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.45);
     left:-350px;
+    top:0px;
+    bottom:0px;
+    z-index:999;
+    width: 300px;
+}
+
+.user-panel{
+    position: fixed;
+    background: #fff;
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.45);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.45);
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.45);
+    right:-350px;
     top:0px;
     bottom:0px;
     z-index:999;
