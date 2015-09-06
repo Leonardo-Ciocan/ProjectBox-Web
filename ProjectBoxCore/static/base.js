@@ -5,7 +5,7 @@ $(document).ready(function(){
    });
 
     $('html').click(function() {
-        $(".side-panel").animate({"left":"-250px"},300);
+        $(".side-panel").animate({"left":"-350px"},300);
     });
 
     $('.side-panel').click(function(event){

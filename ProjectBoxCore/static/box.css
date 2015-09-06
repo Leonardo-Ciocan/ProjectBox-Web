@@ -10,27 +10,33 @@
 }
 
 .card{
-    /*width:200px;*/
-    /*height:200px;*/
+    width:300px;
+    height:300px;
     overflow-y: scroll;
-    padding: 10px;
+    padding: 20px;
 
     -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.05);
     -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.05);
     box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.05);
 
+    border-bottom: 1px solid lightgray;
     border-radius: 5px;
     margin: 15px;
-    /*float:left;*/
+    float:left;
 }
 
-input{
+.card .mdl-textfield{
+    width:100%;
+    margin-left: 0px;
+}
+
+.mdl-textfield{
     margin: 5px;
     margin-left: 15px;
-    padding: 4px;
     float:left;
     display: block;
     /*width: 100%;*/
+    background: #f7f7f7;
 }
 
 input[type=checkbox]{
