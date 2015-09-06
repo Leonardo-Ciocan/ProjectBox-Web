@@ -37,7 +37,6 @@ $(document).ready(function () {
             sy = 60;
         }
             var perc =  (sy-10) / 50.0;
-           console.log(perc);
             $(".box-title").css("top",(55-sy)+"px");
             $(".box-title").css("left",(sy*1.5-10*1.5)+"px");
             $(".box-title").css("color", LightenDarkenColor("#000000" , perc * 255));

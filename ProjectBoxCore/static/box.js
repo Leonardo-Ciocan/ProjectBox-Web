@@ -41,38 +41,66 @@ var BoxItemRow = React.createClass({
         save:function(){
             var input = $("#"+this.props.id+"").val();
             var payload = {};
-            payload[this.props.row.name.toLowerCase()] = input;
+                payload[this.props.row.name.toLowerCase()] = input;
+            console.log(input+">>");
             if(this.props.data[this.props.row.name.toLowerCase()] !== input){
                 this.props.data[this.props.row.name.toLowerCase()] = input;
                 payload["item_id"]= this.props.data["_id"]["$oid"];
                 payload["id"] = box._id["$oid"];
                 payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
-                //$.post("/box/" , payload);
-                console.log(payload);
+                $.post("/box/" , payload);
+            }
+
+        },
+        saveCheck:function(e){
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            var input = $("#"+this.props.id+"").parent();
+            var payload = {};
+            var value = input.hasClass("is-checked");
+            payload[this.props.row.name.toLowerCase()] = value;
+
+            console.log(payload);
+            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
+                this.props.data[this.props.row.name.toLowerCase()] = value;
+                payload["item_id"]= this.props.data["_id"]["$oid"];
+                payload["id"] = box._id["$oid"];
+                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
+                $.post("/box/" , payload);
             }
 
         },
       componentDidMount:function(){
-          $("#"+this.props.id+"").val(this.props.data[this.props.row.name.toLowerCase()]);
+          if(this.props.row.type == "Text" || this.props.row.type == "Number")
+              $("#"+this.props.id+"").val(this.props.data[this.props.row.name.toLowerCase()]);
+          else if (this.props.data[this.props.row.name.toLowerCase()] == "true") {
+              componentHandler.upgradeElement(document.getElementById("" + this.props.id + "").parentNode);
+              document.getElementById("" + this.props.id + "").parentNode.MaterialSwitch.on();
+          }
+
       },
       render:function() {
 
-        console.log(this.props.data);
           var id = this.props.id = unique();
           var content = this.props.data[this.props.row.name.toLowerCase()];
           var name = this.props.row.name;
-        return (
-            this.props.row.type === "Text" || this.props.row.type === "Number" ?
-            <div className="text-row mdl-textfield mdl-js-textfield mdl-textfield--floating-label" onBlur={this.save}>
-                <input className="mdl-textfield__input" type="text" id={id}/>
-                <label className="mdl-textfield__label" htmlFor={id}>{name}</label>
-            </div>
-                :
-            <label className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor={id} onClick={this.save2}>
-              <input type="checkbox" id={id} className="mdl-switch__input"  />
-              <span className="mdl-switch__label">{name}</span>
-            </label>
 
+          var elem = <div/>;
+          if(this.props.row.type === "Text" || this.props.row.type === "Number" ) {
+              elem = <div className="text-row mdl-textfield mdl-js-textfield mdl-textfield--floating-label" onBlur={this.save}>
+                  <input className="mdl-textfield__input" type="text" id={id}/>
+                  <label className="mdl-textfield__label" htmlFor={id}>{name}</label>
+              </div>
+          }
+          else if(this.props.row.type === "Checkbox") {
+              console.log("res:"+(this.props.data[this.props.row.name.toLowerCase()] == "true"));
+              elem = <label className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor={id} onChange={this.saveCheck.bind(this)}>
+                          <input type="checkbox" id={id} className="mdl-switch__input"  />
+                          <span className="mdl-switch__label">{name}</span>
+                      </label>
+          }
+        return (
+          elem
         );
       }
 });
