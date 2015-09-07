@@ -1,11 +1,39 @@
+$(document).ready(function(){
+    $("#add-item").click(function(){
+       window.app.addItem();
+        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+    });
+});
+
 function unique(){
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
             });
 }
+var App = React.createClass({
+    componentDidMount:function(){
+       window.app = this;
+    },
+   getInitialState: function(){
+		return {items: box._data};
+	},
+	addItem: function(){
+        box._data.push({});
+		this.setState({items: box._data});
+	},
+	render: function(){
+		return (
+			<BoxItemList data={this.state.items} structure={box.structure}/>
+		);
+	}
+});
+
 
 var BoxItemList = React.createClass({
+    componentDidMount:function(){
+       $.material.init();
+    },
   render: function() {
     var structure = this.props.structure;
     var data = this.props.data;
@@ -22,6 +50,23 @@ var BoxItemList = React.createClass({
 });
 
 var BoxItem = React.createClass({
+    componentDidMount:function(){
+       var item = this.props.item;
+       if("_id" in this.props.item){
+
+       }
+        else{
+           $.post("/box/",{
+                   "csrfmiddlewaretoken" : getCookie('csrftoken'),
+                   id : box._id["$oid"]
+               },
+               function(dt){
+                    if(dt!=undefined)
+                        item._id = {"$oid":dt};
+               }
+           );
+       }
+    },
   render: function() {
         var item = this.props.item;
 
@@ -53,11 +98,25 @@ var BoxItemRow = React.createClass({
 
         },
         saveCheck:function(e){
-            e.stopPropagation();
-            e.nativeEvent.stopImmediatePropagation();
-            var input = $("#"+this.props.id+"").parent();
+            var input = $("#"+this.props.id+"");
             var payload = {};
-            var value = input.hasClass("is-checked");
+            var value = document.getElementById(""+this.props.id+"").checked;
+            payload[this.props.row.name.toLowerCase()] = value;
+
+            console.log(payload);
+            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
+                this.props.data[this.props.row.name.toLowerCase()] = value;
+                payload["item_id"]= this.props.data["_id"]["$oid"];
+                payload["id"] = box._id["$oid"];
+                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
+                $.post("/box/" , payload);
+            }
+
+        },
+        saveChoice:function(e){
+            var input = $("#"+this.props.id+"");
+            var payload = {};
+            var value = input.val();
             payload[this.props.row.name.toLowerCase()] = value;
 
             console.log(payload);
@@ -71,12 +130,19 @@ var BoxItemRow = React.createClass({
 
         },
       componentDidMount:function(){
-          if(this.props.row.type == "Text" || this.props.row.type == "Number")
-              $("#"+this.props.id+"").val(this.props.data[this.props.row.name.toLowerCase()]);
-          else if (this.props.data[this.props.row.name.toLowerCase()] == "true") {
-              componentHandler.upgradeElement(document.getElementById("" + this.props.id + "").parentNode);
-              document.getElementById("" + this.props.id + "").parentNode.MaterialSwitch.on();
+          if(this.props.row.type == "Text" || this.props.row.type == "Number") {
+              $("#" + this.props.id + "").val(this.props.data[this.props.row.name.toLowerCase()]);
           }
+          else if (this.props.row.type == "Checkbox" && this.props.data[this.props.row.name.toLowerCase()] == "true") {
+            var value = document.getElementById(""+this.props.id+"").checked = true;
+          }
+          else if(this.props.row.type == "Choice"){
+              var data = this.props.data;
+              var row  = this.props.row;
+             $("#"+this.props.id).children()
+                    .each(function() { $(this).attr("selected" ,  (this.text == data[row.name.toLowerCase()])); });
+          }
+
 
       },
       render:function() {
@@ -87,18 +153,44 @@ var BoxItemRow = React.createClass({
 
           var elem = <div/>;
           if(this.props.row.type === "Text" || this.props.row.type === "Number" ) {
-              elem = <div className="text-row mdl-textfield mdl-js-textfield mdl-textfield--floating-label" onBlur={this.save}>
-                  <input className="mdl-textfield__input" type="text" id={id}/>
-                  <label className="mdl-textfield__label" htmlFor={id}>{name}</label>
-              </div>
+//              elem = <div className="text-row mdl-textfield mdl-js-textfield mdl-textfield--floating-label" onBlur={this.save}>
+//                  <input className="mdl-textfield__input" type="text" id={id}/>
+//                  <label className="mdl-textfield__label" htmlFor={id}>{name}</label>
+//              </div>
+
+              elem = <div className="form-group">
+                        <input className="form-control floating-label" id={id} type="text" placeholder={name} onBlur={this.save}/>
+                    </div>;
           }
           else if(this.props.row.type === "Checkbox") {
-              console.log("res:"+(this.props.data[this.props.row.name.toLowerCase()] == "true"));
-              elem = <label className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor={id} onChange={this.saveCheck.bind(this)}>
-                          <input type="checkbox" id={id} className="mdl-switch__input"  />
-                          <span className="mdl-switch__label">{name}</span>
-                      </label>
+//              elem = <label className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor={id} onChange={this.saveCheck.bind(this)}>
+//                          <input type="checkbox" id={id} className="mdl-switch__input"  />
+//                          <span className="mdl-switch__label">{name}</span>
+//                      </label>
+
+              elem = <div className="togglebutton">
+                        <label>
+                            <input id={id} type="checkbox" onClick={this.saveCheck} /> {name}
+                        </label>
+                     </div>;
           }
+          else if(this.props.row.type === "Choice"){
+              var ops = this.props.row.choices.map(function(row){
+                                      return (
+                                        <option>{row}</option>
+                                      );
+                                    });
+                elem = <div className="form-group">
+                            <label htmlFor="select" className="col-lg-2 control-label">{name}</label>
+                            <div className="col-lg-10">
+                                <select className="form-control" id={id} onChange={this.saveChoice}>
+                                    {ops}
+                                </select>
+                            </div>
+                        </div>;
+          }
+
+
         return (
           elem
         );
@@ -106,7 +198,7 @@ var BoxItemRow = React.createClass({
 });
 
 React.render(
-  <BoxItemList data={box._data} structure={box.structure}/>,
+  <App />,
   document.getElementById('container')
 );
 

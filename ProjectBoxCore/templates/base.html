@@ -5,22 +5,26 @@
     <title></title>
     {% load staticfiles %}
 
-        <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.blue-light_blue.min.css">
-        <script src="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.min.js"></script>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 {#        <script src="{% static "jquery.js" %}"></script>#}
         <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
         <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
         <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="https://fb.me/react-0.13.3.js"></script>
         <script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/css/material-wfont.min.css">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/css/material.min.css">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/css/ripples.min.css">
+        <script src="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/js/material.min.js"></script>
+        <script src="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/js/ripples.min.js"></script>
+
 
          <link href="{% static "core.css" %}" rel="stylesheet"/>
          <script src="{% static "base.js" %}"></script>
@@ -33,19 +37,46 @@
       {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <div class="header">
-        <h2 class="title">Project box</h2>
+{#    <div class="header">#}
+{#        <h2 class="title">Project box</h2>#}
+{##}
+{#        <div class="user">#}
+{#            <h1>{{ user.get_username }}</h1>#}
+{#        </div>#}
+{##}
+{#        <div class="boxes">#}
+{#            <h1>Boxes</h1>#}
+{#        </div>#}
+{#    </div>#}
 
-        <div class="user">
-            <h1>{{ user.get_username }}</h1>
-        </div>
-
-        <div class="boxes">
-            <h1>Boxes</h1>
-        </div>
+<div class="navbar navbar-default header">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="javascript:void(0)">Project Box</a>
     </div>
+    <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+            <li id="boxes"><a href="javascript:void(0)">All Boxes</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="javascript:void(0)" class="mdi-action-serarch"></a></li>
+            <li class="dropdown">
+                <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.get_username }} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="javascript:void(0)">Settings</a></li>
+                    <li><a href="javascript:void(0)">Log out</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
 
-    <div class="side-panel">
+    <div class="side-panel panel panel-default">
+     <div class="panel-body">
         <h1 class="side-panel-header">Boxes</h1>
         {% load app_filters %}
         {% for o in boxes %}
@@ -54,12 +85,15 @@
                 <h2>{{ o|get:"_data"|length }} items</h2>
             </div>
         {% endfor %}
+     </div>
     </div>
 
      <div class="user-panel">
          <div class="user-header">
               <h1 class="side-panel-header">{{ user.get_username }}</h1>
          </div>
+
+
 
     </div>
     {% block content %}

@@ -22,10 +22,15 @@
 {% csrf_token %}
 
 {% block content %}
-    <h1 class="box-title">{{ box.name }}</h1>
+   <h1 class="box-title">{{ box.name }}</h1>
+    <div style="background:#009688;height:170px;width:100%">
+
+    </div>
+
     <div id="container">
 
     </div>
+    <a id="add-item" href="javascript:void(0)" class="btn btn-info btn-fab btn-raised mdi-content-add"></a>
 {% endblock content %}
 </body>
 </html>

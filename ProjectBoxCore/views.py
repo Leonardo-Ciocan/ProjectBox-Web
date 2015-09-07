@@ -33,6 +33,7 @@ class Box(APIView):
         for key, value in request.POST.items():
             data[key] = value
         del data["id"]
+        del data["csrfmiddlewaretoken"]
         if "item_id" not in request.POST:
             data["_id"] = ObjectId()
             print(data)
