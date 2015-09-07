@@ -3,8 +3,13 @@
 <head lang="en">
 
     {% load staticfiles %}
-    <script src="{% static "jquery.js" %}"></script>
+    {% block extra_head %}
+        <link href="/static/login.css" rel="stylesheet"/>
+        <script src="/static/login.js" type="text/jsx"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
+
+    {% endblock %}
     <meta charset="UTF-8">
     <title>
         Login to app
@@ -12,17 +17,31 @@
 </head>
 <body>
 
-
+            {% csrf_token %}
             {% block content %}
-                <div class="login-panel">
-                    <form action="" method="post">
-                        {% for field in form %}
-                            <p>{{ field.label }}</p>
-                            {{ field }}
-                        {% endfor %}
+                <div style="background:#009688;height:170px;width:100%">
 
-                        <input type="submit" value="Submit" />
-                     </form>
+                </div>
+
+                <div class="login-panel panel panel-default">
+                    <h1 class="panel-header">EXISTING USER</h1>
+                    <div class="form-group">
+                        <input id="login-username" class="form-control floating-label" type="text" placeholder="Username or email"/>
+                        <input id="login-password" class="form-control floating-label" type="password" placeholder="Password"/>
+
+                        <a id="login" href="javascript:void(0)" class="btn btn-info">Login</a>
+                     </div>
+                </div>
+
+                <div class="signup-panel panel panel-default">
+                    <h1 class="panel-header">NEW USER</h1>
+                    <div className="form-group">
+                        <input class="form-control floating-label" type="text" placeholder="Username or email"/>
+                        <input class="form-control floating-label" type="password" placeholder="Password"/>
+                        <input class="form-control floating-label" type="text" placeholder="Email"/>
+
+                        <a href="javascript:void(0)" class="btn btn-info">Login</a>
+                     </div>
                 </div>
             {% endblock content %}
 

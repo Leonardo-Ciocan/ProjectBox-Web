@@ -42,26 +42,13 @@ h1{
     margin: 0 auto;
     padding-top: 8px;
     text-align: center;
-    font: 'Roboto';
+    font: roboto;
     font-size: 15pt;
 }
 
 body{
     margin:0 auto;
 }
-
-.login-panel{
-    margin: 10px;
-    border:1px solid #2a7bff;
-    color:#2a7bff;
-    width:250px;
-    position: absolute;
-    left:50%;
-    margin-left: -100px;
-    border-radius: 0px;
-    padding: 10px;
-}
-
 
 input[type="submit"]{
     background:#2a7bff ;

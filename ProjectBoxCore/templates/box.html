@@ -8,15 +8,12 @@
         <script>
             {% load app_filters %}
             var box = {{ box|json|safe }};
-
         </script>
         <link href="/static/box.css" rel="stylesheet"/>
 
         <script src="/static/box.js" type="text/jsx"></script>
 
     {% endblock %}
-
-
 </head>
 <body>
 {% csrf_token %}

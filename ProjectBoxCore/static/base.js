@@ -63,6 +63,16 @@ $(document).ready(function () {
             '-ms-box-shadow': "none"
         });
 
+
+    $("#logout").click(function(){
+       $.get(
+           "/logout/",
+           function(){
+               window.location = "/login/";
+           }
+       );
+
+    });
 //    $(document).scroll(function(){
 //       var sy = $(window).scrollTop();
 //       if(sy <=10 ) {
@@ -78,32 +88,20 @@ $(document).ready(function () {
 //    });
 });
 
-function LightenDarkenColor(col, amt) {
 
-    var usePound = false;
 
-    if (col[0] == "#") {
-        col = col.slice(1);
-        usePound = true;
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
-
-    var num = parseInt(col,16);
-
-    var r = (num >> 16) + amt;
-
-    if (r > 255) r = 255;
-    else if  (r < 0) r = 0;
-
-    var b = ((num >> 8) & 0x00FF) + amt;
-
-    if (b > 255) b = 255;
-    else if  (b < 0) b = 0;
-
-    var g = (num & 0x0000FF) + amt;
-
-    if (g > 255) g = 255;
-    else if (g < 0) g = 0;
-
-    return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
-
+    return cookieValue;
 }

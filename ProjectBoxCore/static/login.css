@@ -1,0 +1,44 @@
+.box-title{
+    font-size: 48pt;
+    font-family: roboto;
+    color:#fff;
+    position: fixed;
+    left:50%;
+    top: 80px;
+    z-index:905;
+    width:200px;
+    margin-left: -100px;
+    text-align: center;
+}
+
+.login-panel{
+    margin: 10px;
+    margin-top: -40px;
+    width:250px;
+    position: absolute;
+    left:30%;
+    margin-left: -125px;
+    border-radius: 0px;
+    padding: 10px;
+}
+
+.signup-panel{
+    margin: 10px;
+    margin-top: -40px;
+    width:250px;
+    position: absolute;
+    left:70%;
+    margin-left: -125px;
+    border-radius: 0px;
+    padding: 10px;
+}
+
+input{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.panel-header{
+    color:#2368d2;
+    text-align: center;
+}

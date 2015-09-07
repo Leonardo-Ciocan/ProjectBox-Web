@@ -3,16 +3,15 @@ import json
 from bson import json_util, ObjectId
 from django.contrib import auth
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse, QueryDict
+from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from django.shortcuts import render
 from pymongo import MongoClient
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from ProjectBoxCore.forms import LoginForm
 
 client = MongoClient("127.0.0.1", 27017)
 boxes = client.db.boxes
-
+print("client is " + str(client))
 class Box(APIView):
     def put(self, request, format=None):
         print("xyu")
@@ -75,20 +74,25 @@ class Login(APIView):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponse("done")
+                return HttpResponseRedirect("/user/")
         else:
-            return HttpResponse("nope")
+            return HttpResponse(status=403)
 
     def get(self , request , fromat=None):
         print(list(boxes.find()))
-        return render(request , "login.html" , {"form": LoginForm() , "boxes":list(boxes.find())})
+        return render(request , "login.html")
 
 
 @api_view(['GET', 'POST'])
 def logout(request):
     auth.logout(request)
-    return HttpResponse("")
+    return HttpResponseRedirect("/login/")
 
 @api_view(['GET'])
 def box(request , id):
     return render(request , "box.html" , {"box":boxes.find_one({"_id" : ObjectId(id)}), "boxes":list(boxes.find())})
+
+def signup(request):
+    username = request.POST["username"]
+    password = request.POST["password"]
+    email = request.POST["email"]
