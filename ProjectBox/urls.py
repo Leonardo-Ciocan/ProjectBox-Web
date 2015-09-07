@@ -19,12 +19,16 @@ from rest_framework.authtoken import views as token_views
 from ProjectBoxCore import views
 
 urlpatterns = [
+    url(r"^$" , views.index),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls',namespace='rest_framework')),
     url(r'^api-token-auth/', token_views.obtain_auth_token),
     url(r'^box/', views.Box.as_view()),
-    url(r'^user/', views.User.as_view()),
+    url(r'^user/', views.UserEndpoint.as_view()),
     url(r'^login/', views.Login.as_view()),
     url(r'^logout/', views.logout),
+    url(r'^signup/', views.signup),
+    url(r'^create/', views.create_box),
+
     url(r'^b/(.*)/$', views.box),
 ]

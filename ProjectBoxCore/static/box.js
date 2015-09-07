@@ -1,3 +1,5 @@
+box._data = box._data || [];
+
 $(document).ready(function(){
     $("#add-item").click(function(){
        window.app.addItem();
@@ -5,12 +7,7 @@ $(document).ready(function(){
     });
 });
 
-function unique(){
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-            return v.toString(16);
-            });
-}
+
 
 var App = React.createClass({
     componentDidMount:function(){
@@ -39,6 +36,7 @@ var BoxItemList = React.createClass({
     var structure = this.props.structure;
     var data = this.props.data;
     var boxes = this.props.data.map(function (item) {
+
       return (
         <BoxItem item={item} structure={structure} data={data}>
         </BoxItem>
@@ -72,6 +70,7 @@ var BoxItem = React.createClass({
         var item = this.props.item;
 
         var rows = this.props.structure.map(function (row) {
+
           return (
             <BoxItemRow row={row} data={item}>
             </BoxItemRow>
@@ -131,13 +130,13 @@ var BoxItemRow = React.createClass({
 
         },
       componentDidMount:function(){
-          if(this.props.row.type == "Text" || this.props.row.type == "Number") {
+          if(this.props.row.type.toLowerCase() == "text" || this.props.row.type.toLowerCase() == "number") {
               $("#" + this.props.id + "").val(this.props.data[this.props.row.name.toLowerCase()]);
           }
-          else if (this.props.row.type == "Checkbox" && this.props.data[this.props.row.name.toLowerCase()] == "true") {
+          else if (this.props.row.type.toLowerCase() == "checkbox" && this.props.data[this.props.row.name.toLowerCase()] == "true") {
             var value = document.getElementById(""+this.props.id+"").checked = true;
           }
-          else if(this.props.row.type == "Choice"){
+          else if(this.props.row.type.toLowerCase() == "choice"){
               var data = this.props.data;
               var row  = this.props.row;
              $("#"+this.props.id).children()
@@ -153,7 +152,7 @@ var BoxItemRow = React.createClass({
           var name = this.props.row.name;
 
           var elem = <div/>;
-          if(this.props.row.type === "Text" || this.props.row.type === "Number" ) {
+          if(this.props.row.type.toLowerCase() === "text" || this.props.row.type.toLowerCase() === "number" ) {
 //              elem = <div className="text-row mdl-textfield mdl-js-textfield mdl-textfield--floating-label" onBlur={this.save}>
 //                  <input className="mdl-textfield__input" type="text" id={id}/>
 //                  <label className="mdl-textfield__label" htmlFor={id}>{name}</label>
@@ -163,7 +162,7 @@ var BoxItemRow = React.createClass({
                         <input className="form-control floating-label" id={id} type="text" placeholder={name} onBlur={this.save}/>
                     </div>;
           }
-          else if(this.props.row.type === "Checkbox") {
+          else if(this.props.row.type.toLowerCase() === "checkbox") {
 //              elem = <label className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor={id} onChange={this.saveCheck.bind(this)}>
 //                          <input type="checkbox" id={id} className="mdl-switch__input"  />
 //                          <span className="mdl-switch__label">{name}</span>
@@ -175,14 +174,14 @@ var BoxItemRow = React.createClass({
                         </label>
                      </div>;
           }
-          else if(this.props.row.type === "Choice"){
+          else if(this.props.row.type.toLowerCase() === "choice"){
               var ops = this.props.row.choices.map(function(row){
                                       return (
                                         <option>{row}</option>
                                       );
                                     });
                 elem = <div className="form-group">
-                            <label htmlFor="select" className="col-lg-2 control-label">{name}</label>
+                            <label htmlFor={id} className="control-label">{name}</label>
                             <div className="col-lg-10">
                                 <select className="form-control" id={id} onChange={this.saveChoice}>
                                     {ops}

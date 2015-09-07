@@ -88,3 +88,17 @@ label{
     right:20px;
     bottom:20px;
 }
+
+.form-group , .togglebutton{
+    margin-bottom: 30px;
+    float:none;
+}
+
+.col-lg-10{
+    padding: 0px;
+    width:100%;
+}
+
+select{
+    width:100%;
+}

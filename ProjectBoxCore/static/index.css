@@ -1,0 +1,55 @@
+.box{
+    width:200px;
+    height:200px;
+    float:left;
+    background: #fff;
+    border-radius: 5px;
+    margin: 15px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+#container{
+    margin-top: -60px;
+}
+
+h1 {
+    font-size: 20pt;
+    color:darkslategray;
+}
+
+#add-box{
+    position: fixed;
+    right:20px;
+    bottom:20px;
+}
+
+.modal{
+    height:auto;
+}
+.modal-body{
+    padding-top: 20px!important;
+}
+
+#new-box-name{
+    width: 250px;
+}
+#new-box-structure{
+    width:100%;
+    overflow:scroll;
+    height:300px;
+}
+
+.structure{
+    width:100%;
+}
+.structure-half{
+    width:40%;
+    margin-left: 5px;
+    display:block;
+    float:left;
+}
+.control-label-inv{
+    opacity: 0;
+}
