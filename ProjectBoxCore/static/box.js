@@ -17,9 +17,24 @@ var App = React.createClass({
 		return {items: box._data};
 	},
 	addItem: function(){
-        box._data.push({});
-		this.setState({items: box._data});
+
+        var item = {};
+        box._data.push(item);
+        $.post("/box/",{
+                   "csrfmiddlewaretoken" : getCookie('csrftoken'),
+                   id : box._id["$oid"]
+               },
+               function(dt){
+                    if(dt!=undefined)
+                        item._id = {"$oid":dt};
+                   		this.setState({items: box._data});
+
+               }.bind(this)
+        );
 	},
+    update:function(){
+        this.setState({items: box._data});
+    },
 	render: function(){
 		return (
 			<BoxItemList data={this.state.items} structure={box.structure}/>
@@ -27,6 +42,7 @@ var App = React.createClass({
 	}
 });
 
+var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 var BoxItemList = React.createClass({
     componentDidMount:function(){
@@ -38,12 +54,19 @@ var BoxItemList = React.createClass({
     var boxes = this.props.data.map(function (item) {
 
       return (
-        <BoxItem item={item} structure={structure} data={data}>
+        <BoxItem key={item["_id"]["$oid"]} item={item} structure={structure} data={data}>
         </BoxItem>
       );
     });
     return (
-        <div>{boxes}</div>
+        //<div>
+        //    <ReactCSSTransitionGroup transitionName="list" transitionAppear={true} transitionLeave={false}>
+        //        {boxes}
+        //    </ReactCSSTransitionGroup>
+        //</div>
+         <div>
+                {boxes}
+        </div>
     );
   }
 });
@@ -66,6 +89,20 @@ var BoxItem = React.createClass({
            );
        }
     },
+    delete:function(){
+        box._data.splice(box._data.indexOf(this.props.item),1);
+        $.post("/delete-item/",
+
+            {
+                id : box._id["$oid"],
+                item_id : this.props.item._id["$oid"],
+                "csrfmiddlewaretoken" : getCookie('csrftoken')
+            }
+        );
+        console.log(this.props.item);
+        console.log(box._data);
+        window.app.update();
+    },
   render: function() {
         var item = this.props.item;
 
@@ -77,7 +114,12 @@ var BoxItem = React.createClass({
           );
         });
         return (
-            <div className="card">{rows}</div>
+                <div className="card">
+                    {rows}
+                    <div className="card-bottom">
+                        <a href="javascript:void(0)" className="btn btn-flat btn-default delete-item" onClick={this.delete}>Delete</a>
+                    </div>
+                </div>
         );
   }
 });

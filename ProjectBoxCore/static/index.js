@@ -11,6 +11,7 @@ $(document).ready(function() {
            name : $("#new-box-name").val(),
            "csrfmiddlewaretoken" : getCookie('csrftoken')
         };
+        console.log(_data);
          $.ajax({
             type: "POST",
             url: "/create/",
@@ -18,16 +19,22 @@ $(document).ready(function() {
             success:function(data){
                 console.log(data);
                 var container = $("#container");
-                var bx = $("<div/>").addClass("box panel panel-default").attr("id" , data);
+                var bx = $("<div/>").addClass("big-box panel panel-default").attr("id" , data);
                 bx.append($("<h1/>").text($("#new-box-name").val()));
+                bx.click(function(){
+                    window.location = "/b/" + $(this).attr("id");
+                });
                 container.append(bx);
-                $(".modal").modal("hide");
             },
             error: function (e) {
                 $(".modal").modal("hide");
             }
         });
 
+    });
+
+    $(".big-box").click(function(){
+                    window.location = "/b/" + $(this).attr("id");
     });
 });
 
@@ -53,14 +60,24 @@ var StructureList = React.createClass({
                   );
         });
         return (
-            <div className="panel panel-default">{rows}</div>
+            <div>{rows}</div>
         );
     }
 });
 
 var StructureItem = React.createClass({
     componentDidMount:function(){
-
+        $("#" + this.props.id + "-choices").tokenfield();
+        $("#" + this.props.id + "-choices").parent().removeClass("form-control");
+        var cp = this;
+        $("#" + this.props.id + "-choices").on('change', function (event) {
+           var existingTokens = $(this).tokenfield('getTokens');
+            var arr = [];
+            $.each(existingTokens , function(i,v){
+               arr.push(v.label);
+            });
+            cp.props.row.choices = arr;
+        });
     },
     update_row:function(e){
         if(e.type == "input"){
@@ -72,14 +89,16 @@ var StructureItem = React.createClass({
     },
       render: function() {
             var id = unique();
+            this.props.id = id;
+            var eid = id +"-choices";
             return(
-                <div className="structure" >
-                   <div className="form-group structure-half" >
+                <div className="structure panel panel-default" >
+                   <div className="form-group structure-name" >
                         <label className="control-label-inv">Name</label>
                         <input className="form-control floating-label" type="text" placeholder="Name" onChange={this.update_row}/>
                     </div>
 
-                    <div className="form-group structure-half">
+                    <div className="form-group structure-type">
                             <label htmlFor={id} className="control-label-inv">Type</label>
                             <div>
                                 <select id={id} className="form-control" onChange={this.update_row}>
@@ -89,8 +108,11 @@ var StructureItem = React.createClass({
                                     <option>Choice</option>
                                 </select>
                             </div>
-                        </div>
-
+                    </div>
+                    <div className="form-group structure-choices" >
+                        <label className="control-label-inv">Name</label>
+                        <input id={eid} placeholder="Enter choices" type="text"/>
+                    </div>
 
                 </div>
             );

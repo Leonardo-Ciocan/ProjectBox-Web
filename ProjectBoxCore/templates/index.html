@@ -5,9 +5,9 @@
     {% load staticfiles %}
     {% block extra_head %}
         <link href="/static/index.css" rel="stylesheet"/>
+        <link href="/static/js/lib/bootstrap-tokenfield.min.css" rel="stylesheet"/>
         <script src="/static/index.js" type="text/jsx"></script>
-        <script>
-        </script>
+        <script src="/static/js/lib/bootstrap-tokenfield.min.js" type="text/js"></script>
     {% endblock %}
     <meta charset="UTF-8">
     <title>
@@ -15,21 +15,26 @@
     </title>
 </head>
 <body>
-
             {% block content %}
 
                 {% csrf_token %}
-                <div style="background:#009688;height:170px;width:100%;">
+                <div style="background:#404fb8;height:170px;width:100%;">
 
                 </div>
                 <div id="container">
                     {% load app_filters %}
                     {% for box in boxes %}
-                        <div  id="{{ box|get:"_id" }}" class="box panel panel-default">
-                            <h1>{{ box.name }}</h1>
+                        <div  id="{{ box|get:"_id" }}" class="big-box panel panel-default  ripple-effect">
+                            <h1 class="big-box-name">{{ box.name }}</h1>
+                            <h1 class="big-box-items">{{ box|get:"_data"|length }} items</h1>
                         </div>
+
+                    {% empty %}
+                        <h1 style="text-align:center;width:100%;color:white;">Press to button in the bottom right to add a box :)</h1>
                     {% endfor %}
                 </div>
+
+
                 <a data-toggle="modal" data-target="#create-modal" id="add-box" href="javascript:void(0)" class="btn btn-info btn-fab btn-raised mdi-content-add"></a>
                 <div id="create-modal" class="modal">
                     <div class="modal-dialog">

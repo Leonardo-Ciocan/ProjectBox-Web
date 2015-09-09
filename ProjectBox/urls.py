@@ -29,6 +29,8 @@ urlpatterns = [
     url(r'^logout/', views.logout),
     url(r'^signup/', views.signup),
     url(r'^create/', views.create_box),
+    url(r'^delete-item/', views.delete_item),
+    url(r'^createbox/', views.create_box),
 
     url(r'^b/(.*)/$', views.box),
 ]

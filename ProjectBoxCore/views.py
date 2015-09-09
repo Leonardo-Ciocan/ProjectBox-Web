@@ -3,6 +3,7 @@ import json
 from bson import json_util, ObjectId
 from django.contrib import auth
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, QueryDict, HttpResponseRedirect
 from django.shortcuts import render
@@ -81,7 +82,7 @@ def logout(request):
 
 @api_view(['GET'])
 def box(request , id):
-    return render(request , "box.html" , {"box":boxes.find_one({"_id" : ObjectId(id)}), "boxes":list(boxes.find())})
+    return render(request , "box.html" , {"box":boxes.find_one({"_id" : ObjectId(id)}), "boxes":list(boxes.find({"creator" : request.user.id}))})
 
 @api_view(['POST'])
 def signup(request):
@@ -107,15 +108,30 @@ def signup(request):
     else:
         return HttpResponse(json.dumps(form.errors) , status=403)
 
+@login_required(login_url="/login/")
 @api_view(["GET"])
 def index(request):
-    return render(request , "index.html",{"boxes":list(boxes.find()) , "hide_boxes" : True})
+    return render(request , "index.html",{"boxes":list(boxes.find({"creator":request.user.id})) , "hide_boxes" : True})
 
-@api_view(["POST"])
+@login_required(login_url="/login/")
+@api_view(["POST","GET"])
 def create_box(request):
-    print(request)
-    name = request.POST["name"]
-    structure = json.loads(request.POST["structure"])
-    print(structure)
-    box = boxes.insert({"name": name , "structure" : structure})
-    return HttpResponse(str(box))
+    if request.method == "POST":
+        print(request)
+        name = request.POST["name"]
+        structure = json.loads(request.POST["structure"])
+        print(structure)
+        box = boxes.insert({"name": name , "structure" : structure , "creator" : request.user.id})
+        return HttpResponse(str(box))
+    else:
+        return render(request,"createbox.html")
+
+@login_required(login_url="/login/")
+@api_view(["POST"])
+def delete_item(request):
+    boxes.update(
+      { "_id" : ObjectId(request.POST["id"]) },
+      { "$pull": { '_data': { "_id": ObjectId(request.POST["item_id"]) } } }
+    )
+    return HttpResponse(status=200)
+

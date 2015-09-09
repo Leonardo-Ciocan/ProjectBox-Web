@@ -1,4 +1,4 @@
-.box{
+.big-box{
     width:200px;
     height:200px;
     float:left;
@@ -8,6 +8,25 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    padding: 0px;
+}
+
+.big-box-name{
+    text-align: center;
+    margin-top: 30%;
+    color:#2368d2;
+}
+
+.big-box-items{
+    margin: 0;
+    font-size: 15pt;
+    color: #3f3f3f;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    left:0;
+    right:0;
+    background: rgba(0, 0, 0, 0.07);
 }
 
 #container{
@@ -42,14 +61,36 @@ h1 {
 }
 
 .structure{
-    width:100%;
+    padding: 10px;
+    width: 80%;
+    height: auto;
+    display: block;
+    margin: 20px;
 }
-.structure-half{
+.structure-name{
     width:40%;
     margin-left: 5px;
-    display:block;
-    float:left;
+    display:inline-block;
 }
+
+.structure-type{
+    width:auto;
+    margin-left: 5px;
+    display:inline-block;
+}
+
+
+.structure-choices{
+    width:100%;
+    display:block;
+}
+
+
 .control-label-inv{
     opacity: 0;
+}
+
+.edit-button{
+    display:block;
+    float:left;
 }

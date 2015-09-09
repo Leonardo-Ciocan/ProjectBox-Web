@@ -2,6 +2,8 @@ var SHADE_SHIFT_AMOUNT;
 var boxes_shown = false;
 $(document).ready(function () {
     //$.material.init();
+
+
     $("#boxes").click(function (event) {
         event.stopPropagation();
         $(".side-panel").animate({ "left": boxes_shown ? "-350px":"0px" }, 300);

@@ -1,13 +1,12 @@
 .box-title{
     font-size: 48pt;
-    font-family: roboto;
+    font-family: 'roboto';
     color:#fff;
     position: fixed;
-    left:50%;
     top: 80px;
     z-index:905;
-    width:200px;
-    margin-left: -100px;
+    width:100%;
+
     text-align: center;
 }
 
@@ -101,4 +100,34 @@ label{
 
 select{
     width:100%;
+}
+
+.card-bottom{
+    background: white;
+    width:100%;
+    margin-bottom: 15px;
+}
+
+.delete-item{
+    float:right;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.list-enter {
+  opacity: 0.01;
+}
+
+.list-enter.list-enter-active {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.list-leave {
+  opacity: 1;
+}
+
+.list-leave.list-leave-active {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
 }
