@@ -6,7 +6,7 @@
     top: 80px;
     z-index:905;
     width:100%;
-
+    pointer-events: none;
     text-align: center;
 }
 
@@ -18,6 +18,7 @@
 
 .card{
     width:300px;
+    max-height:500px;
     overflow-y: scroll;
     padding: 20px;
 
@@ -130,4 +131,25 @@ select{
 .list-leave.list-leave-active {
   opacity: 0.01;
   transition: opacity .5s ease-in;
+}
+
+.search{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background-color: transparent;
+    bordeR: none;
+    color: white;
+    border-bottom: 1px solid white;
+}
+
+.box-panel{
+    position: fixed;
+    background: #fff;
+    right:-350px;
+    top:0px;
+    bottom:0px;
+    z-index:999;
+    width: 300px;
+    margin:20px;
 }

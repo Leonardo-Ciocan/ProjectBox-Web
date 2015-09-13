@@ -66,11 +66,9 @@ var Collumn = React.createClass({
             // resize on page load
             .each(resizeInput);
 
-        $("#"+this.props.id + "-choice")
-            // event handler
-            .keyup(resizeInput)
-            // resize on page load
-            .each(resizeInput);
+        $("#"+this.props.id + "-choice").keyup(resizeInput).each(resizeInput);
+        $("#"+this.props.id + "-min").keyup(resizeInput).each(resizeInput);
+        $("#"+this.props.id + "-max").keyup(resizeInput).each(resizeInput);
     },
     getInitialState:function(){
         return {type:"Text"}
@@ -82,6 +80,15 @@ var Collumn = React.createClass({
     },
     saveName: function (e) {
         this.props.collumn.name = e.target.value;
+    },
+    saveChoices:function(e){
+        this.props.collumn.choices = e.target.value.split(",");
+    },
+    saveMin:function(e){
+        this.props.collumn.min = e.target.value;
+    },
+    saveMax:function(e){
+        this.props.collumn.max = e.target.value;
     },
     changedType:function(e){
         var type = e.target.value;
@@ -99,25 +106,45 @@ var Collumn = React.createClass({
                            <select onChange={this.changedType}>
                                <option value="Text" checked>piece of text</option>
                                <option value="Number">number</option>
+                               <option value="Image">image</option>
                                <option value="Checkbox">checkbox</option>
                                <option value="Choice">choice</option>
+                               <option value="Range">number between</option>
                             </select>
                            called <input placeholder="name" id={id+"-name"} type="text" onFocus={this.onAdd}  onChange={this.saveName}/>
-                            which can be : <input placeholder="e.g Easy,Medium,Hard" id={id+"-choice"} type="text"/></h1>
+                            which can be : <input placeholder="e.g Easy,Medium,Hard" id={id+"-choice"} type="text" onChange={this.saveChoices}/></h1>
                    </div>
-       }else{
+       }else if (this.state.type.toLowerCase() == "text" || this.state.type.toLowerCase() == "number" || this.state.type.toLowerCase() == "image"){
            elem  = <div>
                <h1 className="create-line line-small">Each one has a
                    <select onChange={this.changedType}>
                                 <option value="Text" checked>piece of text</option>
                                <option value="Number">number</option>
+                               <option value="Image">image</option>
                                <option value="Checkbox">checkbox</option>
                                <option value="Choice">choice</option>
+                               <option value="Range">number between</option>
+
                     </select>
                    called <input id={id+"-name"} type="text" onFocus={this.onAdd} onChange={this.saveName}/></h1>
            </div>
        }
-
+       else if(this.state.type.toLowerCase() == "range"){
+            elem  = <div>
+               <h1 className="create-line line-small">Each one has a
+                   <select onChange={this.changedType}>
+                                <option value="Text" checked>piece of text</option>
+                               <option value="Number">number</option>
+                               <option value="Image">image</option>
+                               <option value="Checkbox">checkbox</option>
+                               <option value="Choice">choice</option>
+                               <option value="Range">number between</option>
+                    </select>
+                   <input className="short-input" id={id+"-min"}   type="text"  onChange={this.saveMin}/> and
+                   <input className="short-input" id={id+"-max"}   type="text"  onChange={this.saveMax}/>
+                   called <input id={id+"-name"} type="text" onFocus={this.onAdd} onChange={this.saveName}/></h1>
+           </div>
+       }
        return (
             elem
        )

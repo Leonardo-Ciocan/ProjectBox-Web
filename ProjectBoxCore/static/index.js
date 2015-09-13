@@ -5,32 +5,8 @@ $(document).ready(function() {
         window.app.addItem();
     });
 
-    $("#create-box").click(function(){
-        var _data = {
-           structure : JSON.stringify(window.app.getRows()),
-           name : $("#new-box-name").val(),
-           "csrfmiddlewaretoken" : getCookie('csrftoken')
-        };
-        console.log(_data);
-         $.ajax({
-            type: "POST",
-            url: "/create/",
-            data: _data ,
-            success:function(data){
-                console.log(data);
-                var container = $("#container");
-                var bx = $("<div/>").addClass("big-box panel panel-default").attr("id" , data);
-                bx.append($("<h1/>").text($("#new-box-name").val()));
-                bx.click(function(){
-                    window.location = "/b/" + $(this).attr("id");
-                });
-                container.append(bx);
-            },
-            error: function (e) {
-                $(".modal").modal("hide");
-            }
-        });
-
+    $("#add-box").click(function(){
+       window.location ="/createbox/";
     });
 
     $(".big-box").click(function(){

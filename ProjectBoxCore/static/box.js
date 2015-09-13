@@ -5,6 +5,45 @@ $(document).ready(function(){
        window.app.addItem();
         $("html, body").animate({ scrollTop: $(document).height() }, "slow");
     });
+
+
+    var textRegex = /(.+) is (.+)/g;
+    $(".search").keypress(function(e) {
+        if(e.which == 13) {
+            if($(this).val() == ""){
+                React.render(
+                        <App filter=""/>,
+                        document.getElementById('container')
+                    );
+            }else{
+                var data = (textRegex.exec($(this).val()));
+                if (data != null){
+                    if(data.length > 0) {
+                        React.render(
+                            <App filter={data}/>,
+                            document.getElementById('container')
+                        );
+                    }
+                }
+            }
+
+
+        }
+    });
+
+    $("#box-props").click(function(){
+        event.stopPropagation();
+        $(".box-panel").animate({ "right": "0px" }, 300);
+    });
+
+     $(".box-panel").click(function(){
+        event.stopPropagation();
+     });
+
+    for(var i = 0; i < box.contributors;i++){
+
+    }
+
 });
 
 
@@ -14,10 +53,9 @@ var App = React.createClass({
        window.app = this;
     },
    getInitialState: function(){
-		return {items: box._data};
+		return {items: this.props.data};
 	},
 	addItem: function(){
-
         var item = {};
         box._data.push(item);
         $.post("/box/",{
@@ -27,17 +65,19 @@ var App = React.createClass({
                function(dt){
                     if(dt!=undefined)
                         item._id = {"$oid":dt};
-                   		this.setState({items: box._data});
+                   		this.setState({items: this.state.data});
 
                }.bind(this)
         );
 	},
     update:function(){
-        this.setState({items: box._data});
+        this.setState({items: this.props.data});
     },
 	render: function(){
+        var k = unique();
+        console.log(this.props.data);
 		return (
-			<BoxItemList data={this.state.items} structure={box.structure}/>
+			<BoxItemList key={k} data={this.state.items} structure={box.structure} filter={this.props.filter}/>
 		);
 	}
 });
@@ -50,8 +90,22 @@ var BoxItemList = React.createClass({
     },
   render: function() {
     var structure = this.props.structure;
-    var data = this.props.data;
-    var boxes = this.props.data.map(function (item) {
+      var data = this.props.data;
+      var dt = [];
+      if(box._data != undefined){
+          dt = box._data.slice(0);
+      }
+      if(this.props.filter != "") {
+          dt = jQuery.grep(dt, function (v,i) {
+              var info = this.props.filter;
+              var val = v[this.props.filter[1]];
+              if (val == undefined) return false;
+              return val.indexOf(this.props.filter[2]) != -1;
+          }.bind(this));
+          console.log("filtering with ");
+          console.log(this.props.filter);
+      }
+    var boxes = dt.map(function (item) {
 
       return (
         <BoxItem key={item["_id"]["$oid"]} item={item} structure={structure} data={data}>
@@ -99,8 +153,8 @@ var BoxItem = React.createClass({
                 "csrfmiddlewaretoken" : getCookie('csrftoken')
             }
         );
-        console.log(this.props.item);
-        console.log(box._data);
+        //console.log(this.props.item);
+        //console.log(box._data);
         window.app.update();
     },
   render: function() {
@@ -114,11 +168,14 @@ var BoxItem = React.createClass({
           );
         });
         return (
+            <div style={{height:"500px" , float:"left" , margin:"10px"}} >
                 <div className="card">
                     {rows}
                     <div className="card-bottom">
                         <a href="javascript:void(0)" className="btn btn-flat btn-default delete-item" onClick={this.delete}>Delete</a>
                     </div>
+                </div>
+
                 </div>
         );
   }
@@ -129,7 +186,7 @@ var BoxItemRow = React.createClass({
             var input = $("#"+this.props.id+"").val();
             var payload = {};
                 payload[this.props.row.name.toLowerCase()] = input;
-            console.log(input+">>");
+            //console.log(input+">>");
             if(this.props.data[this.props.row.name.toLowerCase()] !== input){
                 this.props.data[this.props.row.name.toLowerCase()] = input;
                 payload["item_id"]= this.props.data["_id"]["$oid"];
@@ -145,7 +202,7 @@ var BoxItemRow = React.createClass({
             var value = document.getElementById(""+this.props.id+"").checked;
             payload[this.props.row.name.toLowerCase()] = value;
 
-            console.log(payload);
+            //console.log(payload);
             if(this.props.data[this.props.row.name.toLowerCase()] !== value){
                 this.props.data[this.props.row.name.toLowerCase()] = value;
                 payload["item_id"]= this.props.data["_id"]["$oid"];
@@ -181,16 +238,70 @@ var BoxItemRow = React.createClass({
           else if(this.props.row.type.toLowerCase() == "choice"){
               var data = this.props.data;
               var row  = this.props.row;
-             $("#"+this.props.id).children()
+              $("#"+this.props.id).children()
                     .each(function() { $(this).attr("selected" ,  (this.text == data[row.name.toLowerCase()])); });
           }
-
+          else if(this.props.row.type.toLowerCase() == "range"){
+              //console.log(parseFloat(this.props.row.max).toFixed(1));
+                //$("#"+this.props.id).slider({
+                //    range: "max",
+                //         min:   parseFloat(this.props.row.min).toFixed(1)  || 0.0 ,
+                //         max:   parseFloat(this.props.row.max).toFixed(1)  || 100.0,
+                //         value: [ parseFloat(this.props.data[this.props.row.name.toLowerCase()]) ],
+                //
+                //});
+                $("#"+this.props.id)[0].min = parseInt(this.props.row.min);
+                $("#"+this.props.id)[0].max = parseInt(this.props.row.max);
+                $("#"+this.props.id)[0].value = (parseInt(this.props.data[this.props.row.name.toLowerCase()]));
+          }
+          else if(this.props.row.type.toLowerCase() == "image"){
+                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
+          }
+          $.material.init();
 
       },
+    saveRange:function(e){
+
+            var input = $("#"+this.props.id+"");
+            var payload = {};
+            var value = e.target.value;
+            payload[this.props.row.name.toLowerCase()] = value;
+
+            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
+                this.props.data[this.props.row.name.toLowerCase()] = value;
+                payload["item_id"]= this.props.data["_id"]["$oid"];
+                payload["id"] = box._id["$oid"];
+                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
+                $.post("/box/" , payload);
+            }
+                    this.props.data[this.props.row.name.toLowerCase()] = $("#"+this.props.id).val();
+
+    },
+    saveImage:function(e){
+
+
+            var input = prompt("Enter the url");
+
+            var payload = {};
+            var value = input;
+            payload[this.props.row.name.toLowerCase()] = value;
+
+            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
+                this.props.data[this.props.row.name.toLowerCase()] = value;
+                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
+                payload["item_id"]= this.props.data["_id"]["$oid"];
+                payload["id"] = box._id["$oid"];
+                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
+                $.post("/box/" , payload);
+            }
+                    this.props.data[this.props.row.name.toLowerCase()] = $("#"+this.props.id).val();
+
+    },
       render:function() {
 
           var id = this.props.id = unique();
           var content = this.props.data[this.props.row.name.toLowerCase()];
+          //console.log(content);
           var name = this.props.row.name;
 
           var elem = <div/>;
@@ -201,7 +312,10 @@ var BoxItemRow = React.createClass({
 //              </div>
 
               elem = <div className="form-group">
-                        <input className="form-control floating-label" id={id} type="text" placeholder={name} onBlur={this.save}/>
+                        <label style={{width:"100%"}}>
+                            {name}
+                            <input className="form-control" id={id} type="text" onBlur={this.save}/>
+                        </label>
                     </div>;
           }
           else if(this.props.row.type.toLowerCase() === "checkbox") {
@@ -210,11 +324,12 @@ var BoxItemRow = React.createClass({
 //                          <span className="mdl-switch__label">{name}</span>
 //                      </label>
 
-              elem = <div className="togglebutton">
-                        <label>
-                            <input id={id} type="checkbox" onClick={this.saveCheck} /> {name}
-                        </label>
-                     </div>;
+              elem = <label>
+                            {name}<div className="togglebutton">
+                            <label>
+                            <input id={id} type="checkbox" onClick={this.saveCheck} />
+                            </label>
+                     </div> </label>
           }
           else if(this.props.row.type.toLowerCase() === "choice"){
               var ops = this.props.row.choices.map(function(row){
@@ -231,7 +346,35 @@ var BoxItemRow = React.createClass({
                             </div>
                         </div>;
           }
+          else if(this.props.row.type.toLowerCase() === "range") {
+                    elem = <div style={{width: "100%"}}>
+                                <label style={{width: "100%"}}>
+                                     {name}
+                                      <input style={{width: "100%"}} className="" id={id} onChange={this.saveRange} type="range"></input>
+                                </label>
+                           </div>;
+          }
+          else if(this.props.row.type.toLowerCase() === "image") {
+              elem =
+                  <label style={{width: "300px",paddingLeft:"0px"}} onClick={this.saveImage}>
+                                     {name}
+                      <div>
 
+                          <img style={{width: "300px",marginLeft:"-20px",paddingBottom:"10px",minHeight:"20px"}} id={id}
+                              onerror="this.src='https://www.google.com.br/logos/2012/montessori-res.png';">
+
+                          </img>
+
+                          <h1 style={{pointerEvents:"none" , visibility: ((content == "" ||content==undefined) ? "visible" : "collapse"),
+                                        color:"#000",
+                                        textAlign:"center"
+                           }}>Click to add {name} image</h1>
+
+
+
+                      </div>
+                  </label>
+          }
 
         return (
           elem
@@ -240,6 +383,6 @@ var BoxItemRow = React.createClass({
 });
 
 React.render(
-  <App />,
+  <App data={box._data} filter=""/>,
   document.getElementById('container')
 );

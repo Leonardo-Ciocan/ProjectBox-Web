@@ -10,9 +10,13 @@
             var box = {{ box|json|safe }};
         </script>
         <link href="/static/box.css" rel="stylesheet"/>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
+        <script src="/static/js/nouislider.min.js" type="text/jsx"></script>
         <script src="/static/box.js" type="text/jsx"></script>
 
+        <style>
+        </style>
     {% endblock %}
 </head>
 <body>
@@ -20,14 +24,33 @@
 
 {% block content %}
     <h1 class="box-title">{{ box.name }}</h1>
-    <div style="background:#404fb8;height:170px;width:100%">
+    <div style="background:#404fb8;height:170px;width:100%;position: relative;">
+        <!--<input type="text" style="position: absolute;right:10px;bottom:10px;" class="search" placeholder="Search"/>-->
+        <div class="navbar navbar-default header" style="position:absolute;left:0;top:120px;bottom:0;right:0;height:50px;">
 
+            <div class="navbar-collapse collapse navbar-responsive-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="boxes"><a  id="box-props" href="javascript:void(0)">Box Properties</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <div id="container">
 
     </div>
+
     <a id="add-item" href="javascript:void(0)" class="btn btn-info btn-fab btn-raised mdi-content-add"></a>
+
+    <div class="box-panel panel panel-default">
+             <div class="user-header">
+                 <h1 class="side-panel-header">{{ box.name }}</h1>
+                 <input type="text" placeholder="Enter username" class="form-control  floating-label" />
+                 <div id="contributors">
+
+                 </div>
+             </div>
+    </div>
 {% endblock content %}
 </body>
 </html>

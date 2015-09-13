@@ -1,6 +1,7 @@
 from json import dumps
 import json
 from bson import json_util, ObjectId
+import django
 from django.contrib import auth
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -19,7 +20,6 @@ print("client is " + str(client))
 class Box(APIView):
     def post(self,request,format=None):
         data = {}
-
         print(request.POST)
         for key, value in request.POST.items():
             data[key] = value
@@ -48,11 +48,7 @@ class Box(APIView):
 
     def get(self,request,format=None):
         print([request.GET["id"] if "id" in request.GET else "none"])
-        if "id" in request.GET:
-            return HttpResponse(json.dumps(list(boxes.find({"_id": ObjectId(request.GET["id"])})),
-                                           sort_keys=True, indent=4, default=json_util.default))
-        else:
-            return HttpResponse(json.dumps(list(boxes.find()), sort_keys=True, indent=4, default=json_util.default))
+        return HttpResponse(json.dumps(list(boxes.find({"_id": ObjectId(request.user.id)})), sort_keys=True, indent=4, default=json_util.default))
 
 class UserEndpoint(APIView):
     def get(self , request , fromat=None):
@@ -135,3 +131,30 @@ def delete_item(request):
     )
     return HttpResponse(status=200)
 
+@login_required(login_url="/login/")
+@api_view(["POST"])
+def add_contributor(request):
+    user = django.contrib.auth.User.objects.filter(username=request.GET["username"])
+    uid = None
+    if user.exists:
+        uid = user.id
+        boxes.update(
+            {"_id": ObjectId(request.POST["id"])},
+
+            {
+                "$push": {
+                     "contributors": uid
+                }
+            }
+        )
+
+    return HttpResponse(status=200)
+
+
+@login_required(login_url="/login/")
+@api_view(["GET"])
+def get_username(request):
+    user = django.contrib.auth.User.objects.filter(id=request.GET["id"])
+    if user.exists():
+        return HttpResponse(user.username)
+    return HttpResponse(status=404)

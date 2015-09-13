@@ -12,7 +12,7 @@
     color:black;
     font-size: 25pt;
     max-lines: 1;
-    text-align: center;
+    text-align: left;
 }
 
 .line-small{
@@ -31,7 +31,7 @@
 .create-line>input{
     border:none;
 
-   background: transparent;
+    background: transparent;
     color:#2368d2;
     border-bottom: 1px solid #e6e6e6;
     min-height: 30px;
@@ -58,4 +58,8 @@ select{
 #btn-create{
     float:right;
     margin-right: 20px;
+}
+
+.short-input{
+    width:50px!important;
 }

@@ -19,6 +19,7 @@ $(document).ready(function () {
     $('html').click(function () {
         $(".side-panel").animate({ "left": "-350px" }, 300);
         $(".user-panel").animate({ "right": "-350px" }, 300);
+        $(".box-panel").animate({ "right": "-350px" }, 300);
         boxes_shown = false;
     });
 

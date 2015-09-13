@@ -24,9 +24,13 @@
                 <div id="container">
                     {% load app_filters %}
                     {% for box in boxes %}
-                        <div  id="{{ box|get:"_id" }}" class="big-box panel panel-default  ripple-effect">
-                            <h1 class="big-box-name">{{ box.name }}</h1>
-                            <h1 class="big-box-items">{{ box|get:"_data"|length }} items</h1>
+                        <div  id="{{ box|get:"_id" }}" class="big-box ripple-effect panel panel-default">
+
+                            <div style="">
+                                <h1 class="big-box-name">{{ box.name }}</h1>
+                                <h1 class="big-box-items">{{ box|get:"_data"|length }} items</h1>
+                            </div>
+
                         </div>
 
                     {% empty %}
@@ -35,33 +39,8 @@
                 </div>
 
 
-                <a data-toggle="modal" data-target="#create-modal" id="add-box" href="javascript:void(0)" class="btn btn-info btn-fab btn-raised mdi-content-add"></a>
-                <div id="create-modal" class="modal">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h4 class="modal-title">Create box</h4>
-                            </div>
-                            <div class="modal-body">
-                                <input id="new-box-name" class="form-control floating-label" type="text" placeholder="Box name"/>
-                                <div style="margin-top: 20px">
-                                    <h1 style="float:left" class="structure-title">Structure</h1>
-                                    <a style="float:right" id="add-structure" href="javascript:void(0)" class="btn btn-info btn-raised">Add structure</a>
-                                </div>
-                                <div id="new-box-structure">
+                <a id="add-box" href="javascript:void(0)" class="btn btn-info btn-fab btn-raised mdi-content-add"></a>
 
-                                </div>
-
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button id="create-box" type="button" class="btn btn-primary">Create</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             {% endblock content %}
 
 </body>
