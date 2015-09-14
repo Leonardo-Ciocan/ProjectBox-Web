@@ -107,7 +107,10 @@ def signup(request):
 @login_required(login_url="/login/")
 @api_view(["GET"])
 def index(request):
-    return render(request , "index.html",{"boxes":list(boxes.find({"creator":request.user.id})) , "hide_boxes" : True})
+    cbox = boxes.find({
+        "members" : request.user.id
+    })
+    return render(request , "index.html",{"boxes":list(boxes.find({"creator":request.user.id})) ,"contr_boxes":cbox , "hide_boxes" : True})
 
 @login_required(login_url="/login/")
 @api_view(["POST","GET"])
@@ -134,27 +137,29 @@ def delete_item(request):
 @login_required(login_url="/login/")
 @api_view(["POST"])
 def add_contributor(request):
-    user = django.contrib.auth.User.objects.filter(username=request.GET["username"])
+    print(request.POST)
+    user = User.objects.filter(username=request.POST["username"])
+    print(user)
     uid = None
-    if user.exists:
-        uid = user.id
+    if user.exists():
+        uid = user[0].id
         boxes.update(
             {"_id": ObjectId(request.POST["id"])},
 
             {
                 "$push": {
-                     "contributors": uid
+                     "members": uid
                 }
             }
         )
+        return HttpResponse(str(uid), status=200)
 
-    return HttpResponse(status=200)
-
+    return HttpResponse(status=404)
 
 @login_required(login_url="/login/")
 @api_view(["GET"])
-def get_username(request):
-    user = django.contrib.auth.User.objects.filter(id=request.GET["id"])
+def get_user_data(request):
+    user = User.objects.filter(id=request.GET["id"])
     if user.exists():
-        return HttpResponse(user.username)
+        return HttpResponse(user[0].username)
     return HttpResponse(status=404)

@@ -6,7 +6,6 @@ $(document).ready(function(){
         $("html, body").animate({ scrollTop: $(document).height() }, "slow");
     });
 
-
     var textRegex = /(.+) is (.+)/g;
     $(".search").keypress(function(e) {
         if(e.which == 13) {
@@ -40,9 +39,11 @@ $(document).ready(function(){
         event.stopPropagation();
      });
 
-    for(var i = 0; i < box.contributors;i++){
+    if(box.members == undefined) box.members = [];
 
-    }
+
+
+
 
 });
 
@@ -382,7 +383,105 @@ var BoxItemRow = React.createClass({
       }
 });
 
+var SideBarHeader = React.createClass({
+    getInitialState:function(){
+      return {name:""}
+    },
+    componentDidMount:function(){
+        $.get("/userinfo/",
+            {
+                id: box.creator
+            },
+            function(data){
+                this.setState({name:data});
+            }.bind(this)
+        )
+    },
+    addMember:function(e){
+      if(e.keyCode == 13) {
+            $.post("/contributor/",
+                {
+                    "csrfmiddlewaretoken" : getCookie('csrftoken'),
+                     username : e.target.value,
+                     id : box._id["$oid"]
+                },
+                function(e){
+                    box.members.push(e);
+                    React.render(
+                      <MemberList members={box.members}/>,
+                      document.getElementById('contributors')
+                    );
+
+                }
+            );
+        }
+    },
+    render:function(){
+                return(
+                    <div>
+                        <h1 className="side-panel-header" style={{"text-align":"center"}}>{ box.name }</h1>
+                        <h4  style={{"text-align":"center"}}>Created by <span style={{color:"dodgerblue"}}>{this.state.name}</span></h4>
+                        <h4 style={{color:"gray" , marginTop:"30px"}}>Contributors:</h4>
+
+                        <input id="add-member" type="text" placeholder="Enter username of contributor"
+                               className="form-control  floating-label" onKeyDown={this.addMember} />
+
+                    </div>
+                )
+    }
+});
+
+var MemberList = React.createClass({
+    componentDidMount:function(){
+
+    },
+    render:function(){
+        var content = this.props.members.map(function(item){
+            return (
+                <MemberItem id={item} key={item}/>
+            )
+        });
+        console.log(content);
+        return (
+            <div>{content}</div>
+        );
+    }
+});
+
+var MemberItem = React.createClass({
+    getInitialState:function(){
+      return {name:""}
+    },
+    componentDidMount:function(){
+        $.get("/userinfo/",
+            {
+                id:this.props.id
+            },
+            function(data){
+                this.setState({name:data});
+            }.bind(this)
+        )
+    },
+    render:function(){
+        return (
+            <h4>{this.state.name}</h4>
+        );
+    }
+});
+
+
+
 React.render(
   <App data={box._data} filter=""/>,
   document.getElementById('container')
 );
+
+React.render(
+      <MemberList members={box.members}/>,
+      document.getElementById('contributors')
+    );
+
+React.render(
+      <SideBarHeader/>,
+      document.getElementById('contr-header')
+    );

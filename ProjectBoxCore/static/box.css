@@ -72,7 +72,6 @@ label{
 }
 
 .user-header{
-    border-bottom: 1px solid lightgray;
 }
 
 .user-header>h1{
@@ -152,4 +151,5 @@ select{
     z-index:999;
     width: 300px;
     margin:20px;
+    padding:10px;
 }
