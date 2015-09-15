@@ -114,7 +114,7 @@ var Collumn = React.createClass({
                            called <input placeholder="name" id={id+"-name"} type="text" onFocus={this.onAdd}  onChange={this.saveName}/>
                             which can be : <input placeholder="e.g Easy,Medium,Hard" id={id+"-choice"} type="text" onChange={this.saveChoices}/></h1>
                    </div>
-       }else if (this.state.type.toLowerCase() == "text" || this.state.type.toLowerCase() == "number" || this.state.type.toLowerCase() == "image"){
+       }else if (this.state.type.toLowerCase() == "text" || this.state.type.toLowerCase() == "number" || this.state.type.toLowerCase() == "image" || this.state.type.toLowerCase() == "checkbox"){
            elem  = <div>
                <h1 className="create-line line-small">Each one has a
                    <select onChange={this.changedType}>

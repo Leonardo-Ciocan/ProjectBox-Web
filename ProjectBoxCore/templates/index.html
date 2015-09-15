@@ -22,39 +22,46 @@
 
                 </div>
                 <div>
-                <div id="container">
-                    {% load app_filters %}
-                    {% for box in boxes %}
-                        <div  id="{{ box|get:"_id" }}" class="big-box ripple-effect panel panel-default">
 
-                                <h1 class="big-box-name">{{ box.name }}</h1>
-                                <h1 class="big-box-items">{{ box|get:"_data"|length }} items</h1>
+                <div style="width:70%;padding:20px;float:left">
+                    <div id="container" class="panel panel-default">
+                        <h1>YOUR BOXES</h1>
 
-                        </div>
+                        {% load app_filters %}
+                        {% for box in boxes %}
+                            <div class="square" style="width:25%;float:left;height: 120px;;position: relative;">
+                                <div  id="{{ box|get:"_id" }}" class="big-box ripple-effect panel panel-default">
 
-                    {% empty %}
-                        <h1 style="text-align:center;width:100%;color:white;">Press to button in the bottom right to add a box :)</h1>
-                    {% endfor %}
-                </div>
+                                        <h1 class="big-box-name">{{ box.name }}</h1>
+                                        <h1 class="big-box-items">{{ box|get:"_data"|length }} items</h1>
 
-                <br/>
-                <h1>You are contributing to</h1>
-                <br/>
-                <br/>
-
-                <div id="container2">
-                    {% load app_filters %}
-                        {% for box in contr_boxes %}
-                            <div  id="{{ box|get:"_id" }}" class="big-box ripple-effect panel panel-default">
-
-                                    <h1 class="big-box-name">{{ box.name }}</h1>
-                                    <h1 class="big-box-items">{{ box|get:"_data"|length }} items</h1>
-
+                                </div>
                             </div>
-
                         {% empty %}
-                            <h1 style="text-align:center;width:100%;color:white;">You haven't been added to any other boxes</h1>
+                            <h1 style="text-align:center;width:100%;color:white;">Press to button in the bottom right to add a box :)</h1>
                         {% endfor %}
+                    </div>
+                </div>
+                <div style="width:30%;padding:20px;float:left">
+                    <div id="container2"  class="panel panel-default">
+
+                        <h1>CONTRIBUTING TO</h1>
+
+                        {% load app_filters %}
+                            {% for box in contr_boxes %}
+                            <div class="square" style="width:100%;float:left;height: 120px;position: relative;">
+
+                                <div  id="{{ box|get:"_id" }}" class="big-box ripple-effect panel panel-default">
+
+                                        <h1 class="big-box-name">{{ box.name }}</h1>
+                                        <h1 class="big-box-items">{{ box|get:"_data"|length }} items</h1>
+
+                                </div>
+                                </div>
+                            {% empty %}
+                                <h1 style="text-align:center;width:100%;color:white;">You haven't been added to any other boxes</h1>
+                            {% endfor %}
+                    </div>
                 </div>
 
                 </div>

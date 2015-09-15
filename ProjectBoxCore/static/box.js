@@ -29,6 +29,7 @@ $(document).ready(function(){
 
         }
     });
+    $(".nano").nanoScroller({ alwaysVisible: true });
 
     $("#box-props").click(function(){
         event.stopPropagation();
@@ -88,6 +89,8 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var BoxItemList = React.createClass({
     componentDidMount:function(){
        $.material.init();
+       $(".nano").nanoScroller({ alwaysVisible: true });
+
     },
   render: function() {
     var structure = this.props.structure;
@@ -169,14 +172,15 @@ var BoxItem = React.createClass({
           );
         });
         return (
-            <div style={{height:"500px" , float:"left" , margin:"10px"}} >
-                <div className="card">
-                    {rows}
-                    <div className="card-bottom">
-                        <a href="javascript:void(0)" className="btn btn-flat btn-default delete-item" onClick={this.delete}>Delete</a>
+            <div style={{height:"300px" , float:"left" , margin:"10px"}} >
+                <div className="card" style={{width:"300px" , height:"300px" , padding:"10px"}}>
+                        <div className="nano">
+                            <div className="nano-content" style={{paddingRight:"20px" , maxHeight:"400px"}}>
+                                <h1 style={{textAlign:"right" , width:"100%" , color:"gray" , fontSize:"20pt"}} onClick={this.delete}>&times;</h1>
+                                {rows}
+                            </div>
+                        </div>
                     </div>
-                </div>
-
                 </div>
         );
   }
@@ -425,7 +429,6 @@ var SideBarHeader = React.createClass({
 
                         <input id="add-member" type="text" placeholder="Enter username of contributor"
                                className="form-control  floating-label" onKeyDown={this.addMember} />
-
                     </div>
                 )
     }

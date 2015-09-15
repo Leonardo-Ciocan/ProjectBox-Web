@@ -1,17 +1,25 @@
 .big-box{
-    width:150px;
-    height:150px;
     float:left;
-    margin: 15px;
+    margin: auto;
     cursor: pointer;
-    position: relative;
     overflow: hidden;
-    padding: 20px;
+    padding: 0px;
     transition: transform 0.3s;
+    position: absolute;
+    top:5px;
+    left:5px;
+    right:5px;
+    bottom:5px;
+    border:1px solid #1d58b1;
+    background: #2368d2;
 }
 
 .big-box:hover{
-    transform: scale(1) translateY(-5px);
+    transform: scale(1.1) translateY(-5px);
+}
+
+.big-box:active{
+    transform: scale(0.8) translateY(-5px);
 }
 
 /*.big-box-top{*/
@@ -35,8 +43,8 @@
 
 .big-box-name{
     text-align: center;
-    margin-top: 20%;
-    color:#000;
+    color:#fff;
+    margin-top: 30px;
 }
 
 .big-box-items{
@@ -52,8 +60,10 @@
 }
 
 #container , #container2{
+    max-width: 1000px;
     margin-top: -50px;
     width:100%;
+    float:left;
     display: block;
     height:auto;
     position: relative;
@@ -61,8 +71,15 @@
 }
 
 h1 {
-    font-size: 20pt;
+    font-size: 10pt;
     color:darkslategray;
+}
+
+#container>h1 , #container2>h1 {
+    font-size: 15pt;
+    color:darkslategray;
+    text-align: left;
+    font-family: "RobotoDraft", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #add-box{

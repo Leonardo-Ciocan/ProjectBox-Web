@@ -12,6 +12,8 @@ $(document).ready(function() {
     $(".big-box").click(function(){
                     window.location = "/b/" + $(this).attr("id");
     });
+
+
 });
 
 var StructureList = React.createClass({
