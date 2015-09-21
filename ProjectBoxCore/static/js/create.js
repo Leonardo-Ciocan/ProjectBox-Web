@@ -1,3 +1,5 @@
+var React = require("react");
+console.log("loading");
 $(document).ready(function(){
 
 
@@ -21,10 +23,32 @@ function resizeInput() {
 function s_unique(){
     return Math.random().toString(36).slice(2);
 }
+
+var ColorPicker = React.createClass({
+        onColor:function(e){
+            this.props.onColor(e.target.style.background);
+        },
+        render: function () {
+            var colors = ["green" , "red" , "blue"];
+            var cols =  colors.map(function(col){
+               return (<div style={{"background":col}} className="color" onClick={this.onColor}>
+
+                      </div>)
+            }.bind(this));
+            console.log(cols);
+            return (
+                <div style={{overflow:"hidden"}}>
+                    {cols}
+                </div>
+            )
+        }
+    }
+);
+
 var data = [{type:"Text" , name:""}];
 var CollumnList = React.createClass({
     getInitialState:function(){
-        return {items:data};
+        return {items:data , color:"green"};
     },
     add_new:function(e){
         data.push({type:"Text" , name:""});
@@ -36,7 +60,11 @@ var CollumnList = React.createClass({
     },
     onCreate:function(){
 
-        this.props.onCreate(this.state.items);
+        this.props.onCreate(this.state.items,this.state.color);
+    },
+    onColor:function(col){
+        console.log(col);
+        this.setState({color:col});
     },
    render:function(){
        var i = 0;
@@ -51,6 +79,7 @@ var CollumnList = React.createClass({
         );
        return (
             <div>
+                <ColorPicker onColor={this.onColor}/>
                 {collumns}
                 <button id="btn-create" className="btn btn-primary" onClick={this.onCreate}>Create</button>
             </div>
@@ -146,13 +175,15 @@ var Collumn = React.createClass({
            </div>
        }
        return (
-            elem
+            <div>
+                {elem}
+            </div>
        )
    }
 });
 
 
-function create_box(e){
+function create_box(e,c){
     var package = {};
     package.name = $("#box-name").val();
     e = jQuery.grep(e , function(v,i){
@@ -161,6 +192,7 @@ function create_box(e){
     });
     package["csrfmiddlewaretoken"] = getCookie('csrftoken');
     package["structure"] = JSON.stringify(e);
+    package["color"] = c;
     $.post("",package,function(){
        window.location = "/";
     });

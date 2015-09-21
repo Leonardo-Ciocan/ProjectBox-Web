@@ -1,3 +1,5 @@
+
+
 .box-title{
     font-size: 48pt;
     font-family: 'roboto';
@@ -18,9 +20,10 @@
 }
 
 .card{
+    border:1px solid lightgray;
     width:300px;
-    max-height:400px;
     overflow-y: scroll;
+    overflow-x:hidden;
     padding: 20px;
 
     -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.05);
@@ -145,12 +148,14 @@ select{
 
 .box-panel{
     position: fixed;
-    background: #fff;
     right:-350px;
     top:0px;
     bottom:0px;
     z-index:999;
     width: 300px;
-    margin:20px;
-    padding:10px;
+    height:100%;
+}
+
+body,html,#base{
+    height:100%;
 }

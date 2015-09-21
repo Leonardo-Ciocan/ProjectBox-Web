@@ -1,4 +1,238 @@
 box._data = box._data || [];
+console.log("starting");
+    var injectTapEventPlugin = require("react-tap-event-plugin");
+    injectTapEventPlugin();
+
+
+    var React = require('react');
+
+    var RaisedButton = require('material-ui/lib/raised-button');
+    var FlatButton = require('material-ui/lib/flat-button');
+    var AppBar = require('material-ui/lib/app-bar');
+    var IconButton = require('material-ui/lib/icon-button');
+    var FontIcon = require('material-ui/lib/font-icon');
+    var Tabs = require('material-ui/lib/tabs/tabs');
+    var Tab = require('material-ui/lib/tabs/tab');
+    var ThemeManager =  require('material-ui/lib/styles').ThemeManager;
+    var themeManager = new ThemeManager();
+    var Paper = require("material-ui/lib/paper");
+    var Toolbar = require("material-ui/lib/toolbar/toolbar");
+    var ToolbarGroup = require("material-ui/lib/toolbar/toolbar-group");
+    var ToolbarSeparator = require("material-ui/lib/toolbar/toolbar-separator");
+    var FloatingActionButton = require("material-ui/lib/floating-action-button");
+    var BoxItemList= require("./js/BoxItemList");
+
+themeManager.component.appBar.height = 48;
+var CustomTheme = {
+    getPalette() {
+        return {
+            primary1Color: box.color || "#00CC00",
+            accent1Color: box.color || "#00CC00"
+        };
+    },
+    getComponentThemes(palette){
+        return {
+            appBar: {
+                height: 48
+            }
+        }
+    }
+    //getComponentThemes(palette) {
+    //    return {
+    //        appBar: {
+    //            color: String,
+    //            textColor: String,
+    //            height: Number
+    //        },
+    //        button: {
+    //            height: Number,
+    //            minWidth: Number,
+    //            iconButtonSize: Number
+    //        },
+    //        checkbox: {
+    //            boxColor: String,
+    //            checkedColor: String,
+    //            requiredColor: String,
+    //            disabledColor: String,
+    //            labelColor: String,
+    //            labelDisabledColor: String
+    //        },
+    //        datePicker: {
+    //            color: String,
+    //            textColor: String,
+    //            calendarTextColor: String,
+    //            selectColor: String,
+    //            selectTextColor: String,
+    //        },
+    //        dropDownMenu: {
+    //            accentColor: String,
+    //        },
+    //        flatButton: {
+    //            color: String,
+    //            textColor: String,
+    //            primaryTextColor: String,
+    //            secondaryTextColor: String,
+    //            disabledColor: String
+    //        },
+    //        floatingActionButton: {
+    //            buttonSize: Number,
+    //            miniSize: Number,
+    //            color: String,
+    //            iconColor: String,
+    //            secondaryColor: String,
+    //            secondaryIconColor: String,
+    //            disabledColor: String,
+    //            disabledTextColor: String
+    //        },
+    //        leftNav: {
+    //            width: Number,
+    //            color: String,
+    //        },
+    //        menu: {
+    //            backgroundColor: String,
+    //            containerBackgroundColor: String,
+    //        },
+    //        menuItem: {
+    //            dataHeight: Number,
+    //            height: Number,
+    //            hoverColor: String,
+    //            padding: Number,
+    //            selectedTextColor: String,
+    //        },
+    //        menuSubheader: {
+    //            padding: Number,
+    //            borderColor: String,
+    //            textColor: String,
+    //        },
+    //        paper: {
+    //            backgroundColor: String,
+    //        },
+    //        radioButton: {
+    //            borderColor: String,
+    //            backgroundColor: String,
+    //            checkedColor: String,
+    //            requiredColor: String,
+    //            disabledColor: String,
+    //            size: Number,
+    //            labelColor: String,
+    //            labelDisabledColor: String
+    //        },
+    //        raisedButton: {
+    //            color: String,
+    //            textColor: String,
+    //            primaryColor: String,
+    //            primaryTextColor: String,
+    //            secondaryColor: String,
+    //            secondaryTextColor: String,
+    //            disabledColor: String,
+    //            disabledTextColor: String
+    //        }
+    //    }
+    //}
+};
+
+themeManager.setTheme(CustomTheme);
+
+
+    var BoxPage = React.createClass({
+        contextTypes: {
+                router:React.PropTypes.func
+        },
+
+       getInitialState: function(){
+            return {items: this.props.data};
+        },
+        childContextTypes: {
+            muiTheme:React.PropTypes.object
+        },
+        getChildContext:function() {
+            return {
+                muiTheme: themeManager.getCurrentTheme()
+            };
+        },
+        componentDidMount:function(){
+
+        },
+        showProperties:function(){
+            event.stopPropagation();
+            $(".box-panel").animate({ "right": "0px" }, 300);
+        },
+        onHome:function(){
+            window.location = "/";
+        },
+        sideBarClick:function(event){
+            event.stopPropagation();
+        },
+
+	addItem: function(){
+        var item = {};
+        box._data.push(item);
+        $.post("/box/",{
+                   "csrfmiddlewaretoken" : getCookie('csrftoken'),
+                   id : box._id["$oid"]
+               },
+               function(dt){
+                    if(dt!=undefined)
+                        item._id = {"$oid":dt};
+                   		this.setState({items: this.state.data});
+
+               }.bind(this)
+        );
+	},
+        render: function(){
+            console.log(this.props.box);
+            var mainStyle={
+                position:"relative",
+                width:"100%",
+                height:"100%"
+            };
+            var containerStyle ={
+                position:"absolute",
+                top:"100px",
+                bottom:0,
+                left:0,
+                right:0
+            };
+            return (
+                <div style={mainStyle}>
+
+                    <AppBar
+                        style={
+                            {
+                                height:"40px"
+                            }
+                        }
+                        title={this.props.data.name}
+                     iconElementLeft={<IconButton iconClassName="material-icons" onClick={this.onHome}>arrow_back</IconButton>}
+                     iconElementRight={<FlatButton label={user} onClick={this.showProperties} />}>
+                    </AppBar>
+                    <Toolbar>
+                      <ToolbarGroup key={0} float="left">
+
+                      </ToolbarGroup>
+                      <ToolbarGroup key={1} float="right">
+                          <RaisedButton label="Add new item" primary={true} onClick={this.addItem} />
+                          <FlatButton label="Box options"/>
+
+                      </ToolbarGroup>
+                    </Toolbar>
+
+                    <div style={containerStyle}>
+                        <BoxItemList data={this.state.items} structure={box.structure} filter={this.props.filter}/>
+                   </div>
+
+                    <div className="box-panel" onClick={this.sideBarClick}>
+                        <Paper style={{height:"100%"}}>
+                            <SideBarHeader/>
+                            <MemberList members={box.members}/>
+                        </Paper>
+                    </div>
+                </div>
+
+            );
+        }
+});
+
 
 $(document).ready(function(){
     $("#add-item").click(function(){
@@ -10,18 +244,18 @@ $(document).ready(function(){
     $(".search").keypress(function(e) {
         if(e.which == 13) {
             if($(this).val() == ""){
-                React.render(
-                        <App filter=""/>,
-                        document.getElementById('container')
-                    );
+                //React.render(
+                //        <App filter=""/>,
+                //        document.getElementById('container')
+                //    );
             }else{
                 var data = (textRegex.exec($(this).val()));
                 if (data != null){
                     if(data.length > 0) {
-                        React.render(
-                            <App filter={data}/>,
-                            document.getElementById('container')
-                        );
+                        //React.render(
+                        //    <App filter={data}/>,
+                        //    document.getElementById('container')
+                        //);
                     }
                 }
             }
@@ -29,16 +263,8 @@ $(document).ready(function(){
 
         }
     });
-    $(".nano").nanoScroller({ alwaysVisible: true });
 
-    $("#box-props").click(function(){
-        event.stopPropagation();
-        $(".box-panel").animate({ "right": "0px" }, 300);
-    });
 
-     $(".box-panel").click(function(){
-        event.stopPropagation();
-     });
 
     if(box.members == undefined) box.members = [];
 
@@ -46,8 +272,19 @@ $(document).ready(function(){
 
 
 
-});
 
+
+    var base =$("#base");
+
+    console.log(themeManager.getCurrentTheme());
+
+    console.log(box);
+    React.render(
+        <BoxPage box={box} filter="" data={box}/>,
+        document.getElementById('base'));
+
+
+});
 
 
 var App = React.createClass({
@@ -77,7 +314,6 @@ var App = React.createClass({
     },
 	render: function(){
         var k = unique();
-        console.log(this.props.data);
 		return (
 			<BoxItemList key={k} data={this.state.items} structure={box.structure} filter={this.props.filter}/>
 		);
@@ -86,306 +322,6 @@ var App = React.createClass({
 
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-var BoxItemList = React.createClass({
-    componentDidMount:function(){
-       $.material.init();
-       $(".nano").nanoScroller({ alwaysVisible: true });
-
-    },
-  render: function() {
-    var structure = this.props.structure;
-      var data = this.props.data;
-      var dt = [];
-      if(box._data != undefined){
-          dt = box._data.slice(0);
-      }
-      if(this.props.filter != "") {
-          dt = jQuery.grep(dt, function (v,i) {
-              var info = this.props.filter;
-              var val = v[this.props.filter[1]];
-              if (val == undefined) return false;
-              return val.indexOf(this.props.filter[2]) != -1;
-          }.bind(this));
-          console.log("filtering with ");
-          console.log(this.props.filter);
-      }
-    var boxes = dt.map(function (item) {
-
-      return (
-        <BoxItem key={item["_id"]["$oid"]} item={item} structure={structure} data={data}>
-        </BoxItem>
-      );
-    });
-    return (
-        //<div>
-        //    <ReactCSSTransitionGroup transitionName="list" transitionAppear={true} transitionLeave={false}>
-        //        {boxes}
-        //    </ReactCSSTransitionGroup>
-        //</div>
-         <div>
-                {boxes}
-        </div>
-    );
-  }
-});
-
-var BoxItem = React.createClass({
-    componentDidMount:function(){
-       var item = this.props.item;
-       if("_id" in this.props.item){
-
-       }
-        else{
-           $.post("/box/",{
-                   "csrfmiddlewaretoken" : getCookie('csrftoken'),
-                   id : box._id["$oid"]
-               },
-               function(dt){
-                    if(dt!=undefined)
-                        item._id = {"$oid":dt};
-               }
-           );
-       }
-    },
-    delete:function(){
-        box._data.splice(box._data.indexOf(this.props.item),1);
-        $.post("/delete-item/",
-
-            {
-                id : box._id["$oid"],
-                item_id : this.props.item._id["$oid"],
-                "csrfmiddlewaretoken" : getCookie('csrftoken')
-            }
-        );
-        //console.log(this.props.item);
-        //console.log(box._data);
-        window.app.update();
-    },
-  render: function() {
-        var item = this.props.item;
-
-        var rows = this.props.structure.map(function (row) {
-
-          return (
-            <BoxItemRow row={row} data={item}>
-            </BoxItemRow>
-          );
-        });
-        return (
-            <div style={{height:"300px" , float:"left" , margin:"10px"}} >
-                <div className="card" style={{width:"300px" , height:"300px" , padding:"10px"}}>
-                        <div className="nano">
-                            <div className="nano-content" style={{paddingRight:"20px" , maxHeight:"400px"}}>
-                                <h1 style={{textAlign:"right" , width:"100%" , color:"gray" , fontSize:"20pt"}} onClick={this.delete}>&times;</h1>
-                                {rows}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        );
-  }
-});
-
-var BoxItemRow = React.createClass({
-        save:function(){
-            var input = $("#"+this.props.id+"").val();
-            var payload = {};
-                payload[this.props.row.name.toLowerCase()] = input;
-            //console.log(input+">>");
-            if(this.props.data[this.props.row.name.toLowerCase()] !== input){
-                this.props.data[this.props.row.name.toLowerCase()] = input;
-                payload["item_id"]= this.props.data["_id"]["$oid"];
-                payload["id"] = box._id["$oid"];
-                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
-                $.post("/box/" , payload);
-            }
-
-        },
-        saveCheck:function(e){
-            var input = $("#"+this.props.id+"");
-            var payload = {};
-            var value = document.getElementById(""+this.props.id+"").checked;
-            payload[this.props.row.name.toLowerCase()] = value;
-
-            //console.log(payload);
-            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
-                this.props.data[this.props.row.name.toLowerCase()] = value;
-                payload["item_id"]= this.props.data["_id"]["$oid"];
-                payload["id"] = box._id["$oid"];
-                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
-                $.post("/box/" , payload);
-            }
-
-        },
-        saveChoice:function(e){
-            var input = $("#"+this.props.id+"");
-            var payload = {};
-            var value = input.val();
-            payload[this.props.row.name.toLowerCase()] = value;
-
-            console.log(payload);
-            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
-                this.props.data[this.props.row.name.toLowerCase()] = value;
-                payload["item_id"]= this.props.data["_id"]["$oid"];
-                payload["id"] = box._id["$oid"];
-                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
-                $.post("/box/" , payload);
-            }
-
-        },
-      componentDidMount:function(){
-          if(this.props.row.type.toLowerCase() == "text" || this.props.row.type.toLowerCase() == "number") {
-              $("#" + this.props.id + "").val(this.props.data[this.props.row.name.toLowerCase()]);
-          }
-          else if (this.props.row.type.toLowerCase() == "checkbox" && this.props.data[this.props.row.name.toLowerCase()] == "true") {
-            var value = document.getElementById(""+this.props.id+"").checked = true;
-          }
-          else if(this.props.row.type.toLowerCase() == "choice"){
-              var data = this.props.data;
-              var row  = this.props.row;
-              $("#"+this.props.id).children()
-                    .each(function() { $(this).attr("selected" ,  (this.text == data[row.name.toLowerCase()])); });
-          }
-          else if(this.props.row.type.toLowerCase() == "range"){
-              //console.log(parseFloat(this.props.row.max).toFixed(1));
-                //$("#"+this.props.id).slider({
-                //    range: "max",
-                //         min:   parseFloat(this.props.row.min).toFixed(1)  || 0.0 ,
-                //         max:   parseFloat(this.props.row.max).toFixed(1)  || 100.0,
-                //         value: [ parseFloat(this.props.data[this.props.row.name.toLowerCase()]) ],
-                //
-                //});
-                $("#"+this.props.id)[0].min = parseInt(this.props.row.min);
-                $("#"+this.props.id)[0].max = parseInt(this.props.row.max);
-                $("#"+this.props.id)[0].value = (parseInt(this.props.data[this.props.row.name.toLowerCase()]));
-          }
-          else if(this.props.row.type.toLowerCase() == "image"){
-                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
-          }
-          $.material.init();
-
-      },
-    saveRange:function(e){
-
-            var input = $("#"+this.props.id+"");
-            var payload = {};
-            var value = e.target.value;
-            payload[this.props.row.name.toLowerCase()] = value;
-
-            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
-                this.props.data[this.props.row.name.toLowerCase()] = value;
-                payload["item_id"]= this.props.data["_id"]["$oid"];
-                payload["id"] = box._id["$oid"];
-                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
-                $.post("/box/" , payload);
-            }
-                    this.props.data[this.props.row.name.toLowerCase()] = $("#"+this.props.id).val();
-
-    },
-    saveImage:function(e){
-
-
-            var input = prompt("Enter the url");
-
-            var payload = {};
-            var value = input;
-            payload[this.props.row.name.toLowerCase()] = value;
-
-            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
-                this.props.data[this.props.row.name.toLowerCase()] = value;
-                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
-                payload["item_id"]= this.props.data["_id"]["$oid"];
-                payload["id"] = box._id["$oid"];
-                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
-                $.post("/box/" , payload);
-            }
-                    this.props.data[this.props.row.name.toLowerCase()] = $("#"+this.props.id).val();
-
-    },
-      render:function() {
-
-          var id = this.props.id = unique();
-          var content = this.props.data[this.props.row.name.toLowerCase()];
-          //console.log(content);
-          var name = this.props.row.name;
-
-          var elem = <div/>;
-          if(this.props.row.type.toLowerCase() === "text" || this.props.row.type.toLowerCase() === "number" ) {
-//              elem = <div className="text-row mdl-textfield mdl-js-textfield mdl-textfield--floating-label" onBlur={this.save}>
-//                  <input className="mdl-textfield__input" type="text" id={id}/>
-//                  <label className="mdl-textfield__label" htmlFor={id}>{name}</label>
-//              </div>
-
-              elem = <div className="form-group">
-                        <label style={{width:"100%"}}>
-                            {name}
-                            <input className="form-control" id={id} type="text" onBlur={this.save}/>
-                        </label>
-                    </div>;
-          }
-          else if(this.props.row.type.toLowerCase() === "checkbox") {
-//              elem = <label className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor={id} onChange={this.saveCheck.bind(this)}>
-//                          <input type="checkbox" id={id} className="mdl-switch__input"  />
-//                          <span className="mdl-switch__label">{name}</span>
-//                      </label>
-
-              elem = <label>
-                            {name}<div className="togglebutton">
-                            <label>
-                            <input id={id} type="checkbox" onClick={this.saveCheck} />
-                            </label>
-                     </div> </label>
-          }
-          else if(this.props.row.type.toLowerCase() === "choice"){
-              var ops = this.props.row.choices.map(function(row){
-                                      return (
-                                        <option>{row}</option>
-                                      );
-                                    });
-                elem = <div className="form-group">
-                            <label htmlFor={id} className="control-label">{name}</label>
-                            <div className="col-lg-10">
-                                <select className="form-control" id={id} onChange={this.saveChoice}>
-                                    {ops}
-                                </select>
-                            </div>
-                        </div>;
-          }
-          else if(this.props.row.type.toLowerCase() === "range") {
-                    elem = <div style={{width: "100%"}}>
-                                <label style={{width: "100%"}}>
-                                     {name}
-                                      <input style={{width: "100%"}} className="" id={id} onChange={this.saveRange} type="range"></input>
-                                </label>
-                           </div>;
-          }
-          else if(this.props.row.type.toLowerCase() === "image") {
-              elem =
-                  <label style={{width: "300px",paddingLeft:"0px"}} onClick={this.saveImage}>
-                                     {name}
-                      <div>
-
-                          <img style={{width: "300px",marginLeft:"-20px",paddingBottom:"10px",minHeight:"20px"}} id={id}
-                              onerror="this.src='https://www.google.com.br/logos/2012/montessori-res.png';">
-
-                          </img>
-
-                          <h1 style={{pointerEvents:"none" , visibility: ((content == "" ||content==undefined) ? "visible" : "collapse"),
-                                        color:"#000",
-                                        textAlign:"center"
-                           }}>Click to add {name} image</h1>
-
-
-
-                      </div>
-                  </label>
-          }
-
-        return (
-          elem
-        );
-      }
-});
 
 var SideBarHeader = React.createClass({
     getInitialState:function(){
@@ -473,18 +409,6 @@ var MemberItem = React.createClass({
 });
 
 
+function generateFilter(input){
 
-React.render(
-  <App data={box._data} filter=""/>,
-  document.getElementById('container')
-);
-
-React.render(
-      <MemberList members={box.members}/>,
-      document.getElementById('contributors')
-    );
-
-React.render(
-      <SideBarHeader/>,
-      document.getElementById('contr-header')
-    );
+}

@@ -18,13 +18,12 @@
             {% block content %}
 
                 {% csrf_token %}
-                <div style="background:#404fb8;height:170px;width:100%;">
+                <div style="height:170px;width:100%;">
 
                 </div>
                 <div>
 
-                <div style="width:70%;padding:20px;float:left">
-                    <div id="container" class="panel panel-default">
+                    <div id="container" class="">
                         <h1>YOUR BOXES</h1>
 
                         {% load app_filters %}
@@ -41,15 +40,13 @@
                             <h1 style="text-align:center;width:100%;color:white;">Press to button in the bottom right to add a box :)</h1>
                         {% endfor %}
                     </div>
-                </div>
-                <div style="width:30%;padding:20px;float:left">
-                    <div id="container2"  class="panel panel-default">
+                    <div id="container2"  class="" style="margin-top: 20px">
 
                         <h1>CONTRIBUTING TO</h1>
 
                         {% load app_filters %}
                             {% for box in contr_boxes %}
-                            <div class="square" style="width:100%;float:left;height: 120px;position: relative;">
+                            <div class="square" style="width:25%;float:left;height: 120px;position: relative;">
 
                                 <div  id="{{ box|get:"_id" }}" class="big-box ripple-effect panel panel-default">
 
@@ -62,7 +59,6 @@
                                 <h1 style="text-align:center;width:100%;color:white;">You haven't been added to any other boxes</h1>
                             {% endfor %}
                     </div>
-                </div>
 
                 </div>
 

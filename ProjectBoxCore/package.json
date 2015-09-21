@@ -1,0 +1,8 @@
+{ "dependencies" :
+  {
+    "gulp-uglify":"latest",
+    "reactify":"latest",
+    "watchify":"latest",
+    "vinyl-source-stream":"latest"
+  }
+}

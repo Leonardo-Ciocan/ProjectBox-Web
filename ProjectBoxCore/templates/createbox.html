@@ -1,15 +1,29 @@
-{% extends "base.html" %}
 <html>
 <head lang="en">
 
     {% load staticfiles %}
-    {% block extra_head %}
         <link href="/static/js/create.css" rel="stylesheet"/>
-        <script src="/static/js/create.jsx" type="text/jsx"></script>
-        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/fonts/Material-Design-Icons.woff">
+        <link rel="stylesheet" href="/static/css/material-fullpalette.min.css">
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/css/ripples.min.css">
+        <script src="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/js/material.min.js"></script>
+        <script src="//cdn.jsdelivr.net/bootstrap.material-design/0.3.0/js/ripples.min.js"></script>
 
 
-    {% endblock %}
+         <link href="{% static "core.css" %}" rel="stylesheet"/>
+         <script src="{% static "base.js" %}"></script>
+
     <meta charset="UTF-8">
     <title>
         Login to app
@@ -18,7 +32,6 @@
 <body>
 
             {% csrf_token %}
-            {% block content %}
                 <div style="background:#404fb8;height:170px;width:100%">
 
                 </div>
@@ -28,7 +41,8 @@
                         <div id="container"></div>
                     </div>
                 </div>
-            {% endblock %}
+        <script src="/static/build/create.js"></script>
+
 
 </body>
 </html>

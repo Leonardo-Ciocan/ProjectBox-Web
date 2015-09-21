@@ -76,9 +76,14 @@ def logout(request):
     auth.logout(request)
     return HttpResponseRedirect("/login/")
 
+@login_required(login_url="/login/")
 @api_view(['GET'])
 def box(request , id):
-    return render(request , "box.html" , {"box":boxes.find_one({"_id" : ObjectId(id)}), "boxes":list(boxes.find({"creator" : request.user.id}))})
+    bx = boxes.find_one({"_id" : ObjectId(id)})
+    print(request.user.username)
+    return render(request , "box.html" , {"box":bx, "boxes":list(boxes.find({"creator" : request.user.id})) ,
+                                            "username":request.user.username,
+                                          "color":bx.get("color","indigo")})
 
 @api_view(['POST'])
 def signup(request):
@@ -120,7 +125,7 @@ def create_box(request):
         name = request.POST["name"]
         structure = json.loads(request.POST["structure"])
         print(structure)
-        box = boxes.insert({"name": name , "structure" : structure , "creator" : request.user.id})
+        box = boxes.insert({"name": name , "structure" : structure , "creator" : request.user.id , "color":request.POST["color"]})
         return HttpResponse(str(box))
     else:
         return render(request,"createbox.html")

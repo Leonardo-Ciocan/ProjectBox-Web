@@ -15,7 +15,7 @@
 }
 
 .big-box:hover{
-    transform: scale(1.1) translateY(-5px);
+    transform: scale(1.0) translateY(-5px);
 }
 
 .big-box:active{
