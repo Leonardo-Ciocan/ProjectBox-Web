@@ -10,12 +10,14 @@
     left:5px;
     right:5px;
     bottom:5px;
-    border:1px solid #1d58b1;
     background: #2368d2;
+    border-radius:5px;
+    font-family:
+    "RobotoDraft", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .big-box:hover{
-    transform: scale(1.0) translateY(-5px);
+    transform: scale(1.05) translateY(-5px);
 }
 
 .big-box:active{
@@ -56,7 +58,7 @@
     bottom: 0;
     left:0;
     right:0;
-    background: #1d58b1;
+    background: rgba(0,8,8,0.5);
 }
 
 #container , #container2{
@@ -137,4 +139,20 @@ h1 {
 .edit-button{
     display:block;
     float:left;
+}
+
+
+.username{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0;
+    padding-top: 0;
+    letter-spacing: 0;
+    font-size: 24px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.87);
+    line-height: 48px;
+    -webkit-box-flex: 1;
+    flex: 1;
+    display: inline-block;
 }

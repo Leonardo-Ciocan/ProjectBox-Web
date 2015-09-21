@@ -1,5 +1,26 @@
+var React = require("react");
+var RaisedButton = require('material-ui/lib/raised-button');
+    var FlatButton = require('material-ui/lib/flat-button');
+    var AppBar = require('material-ui/lib/app-bar');
+    var IconButton = require('material-ui/lib/icon-button');
+    var FontIcon = require('material-ui/lib/font-icon');
+    var Tabs = require('material-ui/lib/tabs/tabs');
+    var Tab = require('material-ui/lib/tabs/tab');
+    var ThemeManager =  require('material-ui/lib/styles').ThemeManager;
+    var themeManager = new ThemeManager();
+    var Paper = require("material-ui/lib/paper");
+    var DropDownIcon = require("material-ui/lib/drop-down-icon");
+    var Toolbar = require("material-ui/lib/toolbar/toolbar");
+    var ToolbarGroup = require("material-ui/lib/toolbar/toolbar-group");
+    var ToolbarSeparator = require("material-ui/lib/toolbar/toolbar-separator");
+    var FloatingActionButton = require("material-ui/lib/floating-action-button");
+    var BoxItemList= require("./js/BoxItemList");
+    var MenuItem = require('material-ui/lib/menus/menu-item');
+    var IconMenu = require('material-ui/lib/menus/icon-menu');
+    var MenuDivider = require('material-ui/lib/menus/menu-divider');
+
 $(document).ready(function() {
-    $.material.init();
+    console.log("hey");
 
     $("#add-structure").click(function(){
         window.app.addItem();
@@ -16,88 +37,81 @@ $(document).ready(function() {
 
 });
 
-var StructureList = React.createClass({
-    componentDidMount:function(){
-       window.app = this;
+
+themeManager.component.appBar.height = 48;
+var CustomTheme = {
+    getPalette() {
+        return {
+            primary1Color:  "#2368d2",
+            accent1Color: "#2368d2"
+        };
     },
-    getInitialState: function(){
-		return {items: []};
-	},
+    getComponentThemes(palette){
+        return {
+            appBar: {
+                height: 48
+            }
+        }
+    }
+};
+themeManager.setTheme(CustomTheme);
+
+var IndexPage = React.createClass({
+    contextTypes: {
+                router:React.PropTypes.func
+        },
+
+
+        childContextTypes: {
+            muiTheme:React.PropTypes.object
+        },
+        getChildContext:function() {
+            return {
+                muiTheme: themeManager.getCurrentTheme()
+            };
+        },
     addItem:function(){
-        this.state.items.push({type:"text",name:""});
-        this.setState({items: this.state.items});
+        window.location="/createbox/";
     },
-    getRows:function(){
-      return this.state.items;
+    logout:function(){
+        window.location = "/logout/";
     },
     render:function(){
-        var rows = this.state.items.map(function (row) {
-              return (
-                    <StructureItem row={row}>
-                    </StructureItem>
-                  );
-        });
-        return (
-            <div>{rows}</div>
-        );
+        return(
+            <div>
+                <AppBar
+                        style={
+                            {
+                                height:"40px"
+                            }
+                        }
+                        title="Project Box"
+
+                     iconElementRight={
+                        <div>
+                            <h1 className="username" > {user} </h1>
+<div  className="username"  ><IconMenu iconButtonElement={<IconButton iconClassName="material-icons" tooltipPosition="bottom-center"
+  tooltip="Sky">keyboard_arrow_down</IconButton>}>
+  <MenuItem primaryText="Send feedback" />
+  <MenuItem primaryText="Settings" />
+  <MenuItem primaryText="Help" />
+  <MenuItem primaryText="Sign out" onClick={this.logout}/>
+</IconMenu>     </div>                   </div>
+                        }>
+                    </AppBar>
+                    <Toolbar>
+                      <ToolbarGroup key={0} float="left">
+                          <RaisedButton label="Create box" primary={true} onClick={this.addItem} />
+
+                      </ToolbarGroup>
+                      <ToolbarGroup key={1} float="right">
+
+
+                      </ToolbarGroup>
+                    </Toolbar>
+            </div>
+        )
     }
 });
 
-var StructureItem = React.createClass({
-    componentDidMount:function(){
-        $("#" + this.props.id + "-choices").tokenfield();
-        $("#" + this.props.id + "-choices").parent().removeClass("form-control");
-        var cp = this;
-        $("#" + this.props.id + "-choices").on('change', function (event) {
-           var existingTokens = $(this).tokenfield('getTokens');
-            var arr = [];
-            $.each(existingTokens , function(i,v){
-               arr.push(v.label);
-            });
-            cp.props.row.choices = arr;
-        });
-    },
-    update_row:function(e){
-        if(e.type == "input"){
-            this.props.row.name = e.target.value;
-        }
-        else{
-            this.props.row.type = e.target.value;
-        }
-    },
-      render: function() {
-            var id = unique();
-            this.props.id = id;
-            var eid = id +"-choices";
-            return(
-                <div className="structure panel panel-default" >
-                   <div className="form-group structure-name" >
-                        <label className="control-label-inv">Name</label>
-                        <input className="form-control floating-label" type="text" placeholder="Name" onChange={this.update_row}/>
-                    </div>
-
-                    <div className="form-group structure-type">
-                            <label htmlFor={id} className="control-label-inv">Type</label>
-                            <div>
-                                <select id={id} className="form-control" onChange={this.update_row}>
-                                    <option>Text</option>
-                                    <option>Number</option>
-                                    <option>Checkbox</option>
-                                    <option>Choice</option>
-                                </select>
-                            </div>
-                    </div>
-                    <div className="form-group structure-choices" >
-                        <label className="control-label-inv">Name</label>
-                        <input id={eid} placeholder="Enter choices" type="text"/>
-                    </div>
-
-                </div>
-            );
-      }
-});
-
-React.render(
-  <StructureList />,
-  document.getElementById('new-box-structure')
-);
+React.render(<IndexPage/> , document.getElementById("base"));

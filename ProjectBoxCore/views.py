@@ -115,7 +115,7 @@ def index(request):
     cbox = boxes.find({
         "members" : request.user.id
     })
-    return render(request , "index.html",{"boxes":list(boxes.find({"creator":request.user.id})) ,"contr_boxes":cbox , "hide_boxes" : True})
+    return render(request , "index.html",{ "username":request.user.username,"boxes":list(boxes.find({"creator":request.user.id})) ,"contr_boxes":cbox , "hide_boxes" : True})
 
 @login_required(login_url="/login/")
 @api_view(["POST","GET"])

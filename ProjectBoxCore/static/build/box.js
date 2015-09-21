@@ -23,9 +23,9 @@ console.log("starting");
     var ToolbarSeparator = require("material-ui/lib/toolbar/toolbar-separator");
     var FloatingActionButton = require("material-ui/lib/floating-action-button");
     var BoxItemList= require("./js/BoxItemList");
-var MenuItem = require('material-ui/lib/menus/menu-item');
-var IconMenu = require('material-ui/lib/menus/icon-menu');
-var MenuDivider = require('material-ui/lib/menus/menu-divider');
+    var MenuItem = require('material-ui/lib/menus/menu-item');
+    var IconMenu = require('material-ui/lib/menus/icon-menu');
+    var MenuDivider = require('material-ui/lib/menus/menu-divider');
 
 themeManager.component.appBar.height = 48;
 var CustomTheme = {
