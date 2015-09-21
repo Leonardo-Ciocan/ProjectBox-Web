@@ -16,11 +16,15 @@ console.log("starting");
     var ThemeManager =  require('material-ui/lib/styles').ThemeManager;
     var themeManager = new ThemeManager();
     var Paper = require("material-ui/lib/paper");
+    var DropDownIcon = require("material-ui/lib/drop-down-icon");
     var Toolbar = require("material-ui/lib/toolbar/toolbar");
     var ToolbarGroup = require("material-ui/lib/toolbar/toolbar-group");
     var ToolbarSeparator = require("material-ui/lib/toolbar/toolbar-separator");
     var FloatingActionButton = require("material-ui/lib/floating-action-button");
     var BoxItemList= require("./js/BoxItemList");
+var MenuItem = require('material-ui/lib/menus/menu-item');
+var IconMenu = require('material-ui/lib/menus/icon-menu');
+var MenuDivider = require('material-ui/lib/menus/menu-divider');
 
 themeManager.component.appBar.height = 48;
 var CustomTheme = {
@@ -179,6 +183,9 @@ themeManager.setTheme(CustomTheme);
                }.bind(this)
         );
 	},
+        logout:function(){
+            window.location="/logout/";
+        },
         render: function(){
             console.log(this.props.box);
             var mainStyle={
@@ -193,6 +200,10 @@ themeManager.setTheme(CustomTheme);
                 left:0,
                 right:0
             };
+            var iconMenuItems = [
+              { payload: '1', text: 'Download' },
+              { payload: '2', text: 'More Info' }
+            ];
             return (
                 <div style={mainStyle}>
 
@@ -204,15 +215,25 @@ themeManager.setTheme(CustomTheme);
                         }
                         title={this.props.data.name}
                      iconElementLeft={<IconButton iconClassName="material-icons" onClick={this.onHome}>arrow_back</IconButton>}
-                     iconElementRight={<FlatButton label={user} onClick={this.showProperties} />}>
+                     iconElementRight={
+                        <div>
+                            <h1 className="username" >{user} </h1>
+<div  className="username"  ><IconMenu iconButtonElement={<IconButton iconClassName="material-icons" tooltipPosition="bottom-center"
+  tooltip="Sky">keyboard_arrow_down</IconButton>}>
+  <MenuItem primaryText="Send feedback" />
+  <MenuItem primaryText="Settings" />
+  <MenuItem primaryText="Help" />
+  <MenuItem primaryText="Sign out" onClick={this.logout}/>
+</IconMenu>     </div>                   </div>
+                        }>
                     </AppBar>
                     <Toolbar>
                       <ToolbarGroup key={0} float="left">
+                          <RaisedButton label="Add new item" primary={true} onClick={this.addItem} />
 
                       </ToolbarGroup>
                       <ToolbarGroup key={1} float="right">
-                          <RaisedButton label="Add new item" primary={true} onClick={this.addItem} />
-                          <FlatButton label="Box options"/>
+                          <FlatButton label="Box options" onClick={this.showProperties} />
 
                       </ToolbarGroup>
                     </Toolbar>

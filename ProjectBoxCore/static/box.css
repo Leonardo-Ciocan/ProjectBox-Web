@@ -159,3 +159,18 @@ select{
 body,html,#base{
     height:100%;
 }
+
+.username{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0;
+    padding-top: 0;
+    letter-spacing: 0;
+    font-size: 24px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.87);
+    line-height: 48px;
+    -webkit-box-flex: 1;
+    flex: 1;
+    display: inline-block;
+}

@@ -45,13 +45,13 @@ var BoxItem = React.createClass({
         }.bind(this));
 
       var barStyle = {
-        overflow:"hidden"
+        float:"right"
       };
 
         return (
             <div style={{float:"left" , padding:"10px",width:"25%"}} >
                 <Paper zDepth={1}  style={{width:"100%",padding:"10px",paddingTop:"0px"}}>
-                            <div style={{}}>
+                            <div style={{overflow:"hidden"}}>
                                 {rows}
                                 <div style={barStyle}>
                                     <IconButton iconClassName="material-icons"

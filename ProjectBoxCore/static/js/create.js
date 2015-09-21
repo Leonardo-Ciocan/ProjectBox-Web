@@ -29,7 +29,7 @@ var ColorPicker = React.createClass({
             this.props.onColor(e.target.style.background);
         },
         render: function () {
-            var colors = ["green" , "red" , "blue"];
+            var colors = ["#245124" , "#4F6693" , "#AD4575", "#212121", "#EFD004"];
             var cols =  colors.map(function(col){
                return (<div style={{"background":col}} className="color" onClick={this.onColor}>
 

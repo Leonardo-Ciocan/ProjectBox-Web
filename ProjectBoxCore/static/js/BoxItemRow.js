@@ -146,7 +146,7 @@ var BoxItemRow = React.createClass({
                     return {text:item};
                 });
               console.log(this.props.row.choices);
-                elem = <div className="form-group">
+                elem = <div className="form-group" style={{marginTop:"15px"}}>
                             <label className="control-label">{name}</label>
                             <DropDownMenu
                                 style= {{
