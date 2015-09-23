@@ -49,7 +49,7 @@ var BoxItem = React.createClass({
       };
 
         return (
-            <div style={{float:"left" , padding:"10px",width:"25%"}} >
+            <div style={{float:"left" , padding:"10px",width:"33%"}} >
                 <Paper zDepth={1}  style={{width:"100%",padding:"10px",paddingTop:"0px"}}>
                             <div style={{overflow:"hidden"}}>
                                 {rows}

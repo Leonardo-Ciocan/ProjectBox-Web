@@ -26,6 +26,7 @@ console.log("starting");
     var MenuItem = require('material-ui/lib/menus/menu-item');
     var IconMenu = require('material-ui/lib/menus/icon-menu');
     var MenuDivider = require('material-ui/lib/menus/menu-divider');
+    var TextField = require('material-ui/lib/text-field');
 
 themeManager.component.appBar.height = 48;
 var CustomTheme = {
@@ -145,7 +146,7 @@ themeManager.setTheme(CustomTheme);
         },
 
        getInitialState: function(){
-            return {items: this.props.data};
+            return {items: this.props.data , filter : []};
         },
         childContextTypes: {
             muiTheme:React.PropTypes.object
@@ -184,22 +185,39 @@ themeManager.setTheme(CustomTheme);
                }.bind(this)
         );
 	},
+        search:function(e){
+
+            var txt = e.target.value;
+            var r=generateFilter(txt);
+            var c =[ r ];
+            this.setState({
+                filters : r == undefined ? [] : c
+            });
+        },
         logout:function(){
             window.location="/logout/";
         },
         render: function(){
+
             console.log(this.props.box);
             var mainStyle={
                 position:"relative",
                 width:"100%",
                 height:"100%"
             };
+            var leftNav={
+                position:"absolute",
+                top:"100px",
+                right:30,
+                width:"270px"
+            };
             var containerStyle ={
                 position:"absolute",
                 top:"100px",
                 bottom:0,
+                right:"300px",
                 left:0,
-                right:0
+                padding:"10px"
             };
             var iconMenuItems = [
               { payload: '1', text: 'Download' },
@@ -228,27 +246,21 @@ React.createElement("div", {className: "username"}, React.createElement(IconMenu
 ), "     "), "                   ")
                         }
                     ), 
-                    React.createElement(Toolbar, null, 
-                      React.createElement(ToolbarGroup, {key: 0, float: "left"}, 
-                          React.createElement(RaisedButton, {label: "Add new item", primary: true, onClick: this.addItem})
+                    React.createElement("div", null, 
+                        React.createElement(RaisedButton, {style: {float:"left",margin:"20px"}, label: "Add new item", primary: true, onClick: this.addItem}), 
+                        React.createElement(TextField, {onKeyUp: this.search, hintText: "Search", style: {float:"right",margin:"20px"}})
 
-                      ), 
-                      React.createElement(ToolbarGroup, {key: 1, float: "right"}, 
-                          React.createElement(FlatButton, {label: "Box options", onClick: this.showProperties})
-
-                      )
                     ), 
 
-                    React.createElement("div", {style: containerStyle}, 
-                        React.createElement(BoxItemList, {data: this.state.items, structure: box.structure, filter: this.props.filter})
-                   ), 
-
-                    React.createElement("div", {className: "box-panel", onClick: this.sideBarClick}, 
-                        React.createElement(Paper, {style: {height:"100%"}}, 
-                            React.createElement(SideBarHeader, null), 
-                            React.createElement(MemberList, {members: box.members})
+                    React.createElement("div", {style: leftNav}, 
+                        React.createElement(Paper, {style: {width:"100%"  ,margin:"10px" , padding:"10px",marginTop:"20px"}}, 
+                             React.createElement(SideBarHeader, null), 
+                            React.createElement(MemberList, {style: {paddingTop:"0px"}, members: box.members})
                         )
-                    )
+                    ), 
+                    React.createElement("div", {style: containerStyle}, 
+                        React.createElement(BoxItemList, {data: this.state.items, structure: box.structure, filters: this.state.filters})
+                   )
                 )
 
             );
@@ -380,13 +392,12 @@ var SideBarHeader = React.createClass({displayName: "SideBarHeader",
     },
     render:function(){
                 return(
-                    React.createElement("div", null, 
-                        React.createElement("h1", {className: "side-panel-header", style: {"text-align":"center"}},  box.name), 
-                        React.createElement("h4", {style: {"text-align":"center"}}, "Created by ", React.createElement("span", {style: {color:"dodgerblue"}}, this.state.name)), 
-                        React.createElement("h4", {style: {color:"gray" , marginTop:"30px"}}, "Contributors:"), 
+                    React.createElement("div", {style: {}}, 
+                        React.createElement("h1", {className: "side-panel-header", style: {"text-align":"center",color:CustomTheme.getPalette().primary1Color}},  box.name), 
+                        React.createElement("h4", {style: {"text-align":"center",paddingBottom:"20px" , borderBottom:"1px solid gray"}}, "Created by ", React.createElement("span", {style: {color:CustomTheme.getPalette().primary1Color}}, this.state.name)), 
+                        React.createElement("h4", {style: {color:"gray" , marginTop:"30px",textAlign:"center"}}, "MEMBERS"), 
 
-                        React.createElement("input", {id: "add-member", type: "text", placeholder: "Enter username of contributor", 
-                               className: "form-control  floating-label", onKeyDown: this.addMember})
+                        React.createElement(TextField, {floatingLabelText: "Add member by username", onKeyDown: this.addMember})
                     )
                 )
     }
@@ -424,18 +435,36 @@ var MemberItem = React.createClass({displayName: "MemberItem",
         )
     },
     render:function(){
+        var memberStyle={
+            padding:"8px",
+            background: CustomTheme.getPalette().primary1Color,
+            color:"white",
+            borderRadius:"5px"
+        };
         return (
-            React.createElement("h4", null, this.state.name)
+            React.createElement("h4", {style: memberStyle}, this.state.name)
         );
     }
 });
 
 
 function generateFilter(input){
-
+    var filter = {
+        target : "",
+        type   : "",
+        param  : ""
+    }
+    var textFilter = /(.*) is (.*)/g;
+    var textMatches = textFilter.exec(input);
+    if(textMatches != null && textMatches.length > 0){
+        filter.type = "text";
+        filter.param = textMatches[2];
+        filter.target = textMatches[1];
+        return filter;
+    }
 }
 
-},{"./js/BoxItemList":3,"material-ui/lib/app-bar":5,"material-ui/lib/drop-down-icon":10,"material-ui/lib/flat-button":15,"material-ui/lib/floating-action-button":16,"material-ui/lib/font-icon":17,"material-ui/lib/icon-button":18,"material-ui/lib/menus/icon-menu":28,"material-ui/lib/menus/menu-divider":29,"material-ui/lib/menus/menu-item":30,"material-ui/lib/paper":36,"material-ui/lib/raised-button":37,"material-ui/lib/styles":44,"material-ui/lib/tabs/tab":58,"material-ui/lib/tabs/tabs":60,"material-ui/lib/toolbar/toolbar":65,"material-ui/lib/toolbar/toolbar-group":63,"material-ui/lib/toolbar/toolbar-separator":64,"react":259,"react-tap-event-plugin":86}],2:[function(require,module,exports){
+},{"./js/BoxItemList":3,"material-ui/lib/app-bar":5,"material-ui/lib/drop-down-icon":10,"material-ui/lib/flat-button":15,"material-ui/lib/floating-action-button":16,"material-ui/lib/font-icon":17,"material-ui/lib/icon-button":18,"material-ui/lib/menus/icon-menu":28,"material-ui/lib/menus/menu-divider":29,"material-ui/lib/menus/menu-item":30,"material-ui/lib/paper":36,"material-ui/lib/raised-button":37,"material-ui/lib/styles":44,"material-ui/lib/tabs/tab":58,"material-ui/lib/tabs/tabs":60,"material-ui/lib/text-field":61,"material-ui/lib/toolbar/toolbar":65,"material-ui/lib/toolbar/toolbar-group":63,"material-ui/lib/toolbar/toolbar-separator":64,"react":259,"react-tap-event-plugin":86}],2:[function(require,module,exports){
 var React = require('react');
 var BoxItemRow = require("./BoxItemRow");
 var Paper = require("material-ui/lib/paper");
@@ -487,7 +516,7 @@ var BoxItem = React.createClass({displayName: "BoxItem",
       };
 
         return (
-            React.createElement("div", {style: {float:"left" , padding:"10px",width:"25%"}}, 
+            React.createElement("div", {style: {float:"left" , padding:"10px",width:"33%"}}, 
                 React.createElement(Paper, {zDepth: 1, style: {width:"100%",padding:"10px",paddingTop:"0px"}}, 
                             React.createElement("div", {style: {overflow:"hidden"}}, 
                                 rows, 
@@ -525,15 +554,16 @@ var BoxItemList = React.createClass({displayName: "BoxItemList",
       if(box._data != undefined){
           dt = box._data.slice(0);
       }
-      if(this.props.filter != "") {
+      console.log(this.props.filters);
+      if(this.props.filters != undefined && this.props.filters.length > 0) {
           dt = jQuery.grep(dt, function (v,i) {
-              var info = this.props.filter;
-              var val = v[this.props.filter[1]];
+              var filter = this.props.filters[0];
+              var val = v[filter.target].toLowerCase();
               if (val == undefined) return false;
-              return val.indexOf(this.props.filter[2]) != -1;
+              return val.indexOf(filter.param.toLowerCase()) != -1;
           }.bind(this));
           console.log("filtering with ");
-          console.log(this.props.filter);
+          console.log(this.props.filters[0]);
       }
     var boxes = dt.map(function (item) {
       return (

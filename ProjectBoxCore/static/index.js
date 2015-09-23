@@ -17,6 +17,7 @@ var RaisedButton = require('material-ui/lib/raised-button');
     var BoxItemList= require("./js/BoxItemList");
     var MenuItem = require('material-ui/lib/menus/menu-item');
     var IconMenu = require('material-ui/lib/menus/icon-menu');
+    var LeftNav = require('material-ui/lib/left-nav');
     var MenuDivider = require('material-ui/lib/menus/menu-divider');
 
 $(document).ready(function() {
@@ -32,6 +33,10 @@ $(document).ready(function() {
 
     $(".big-box").click(function(){
                     window.location = "/b/" + $(this).attr("id");
+    });
+
+    $(".big-box-new").click(function(){
+        window.location="/createbox/";
     });
 
 
@@ -71,12 +76,26 @@ var IndexPage = React.createClass({
             };
         },
     addItem:function(){
-        window.location="/createbox/";
+
     },
     logout:function(){
         window.location = "/logout/";
     },
+    userClicked:function(){
+      this.refs.leftNav.toggle();
+    },
+    navClick:function(e,i,item){
+        item.action();
+    },
     render:function(){
+        menuItems = [
+              {  text: 'Settings' },
+              {  text: 'Help' },
+              {  text: 'Feedback' },
+              { type: "SUBHEADER", text: '' },
+              {  text: 'Log out' , action:function(){window.location = "/logout/"} }
+
+            ];
         return(
             <div>
                 <AppBar
@@ -86,29 +105,11 @@ var IndexPage = React.createClass({
                             }
                         }
                         title="Project Box"
-
+iconElementLeft={<div/>}
                      iconElementRight={
-                        <div>
-                            <h1 className="username" > {user} </h1>
-<div  className="username"  ><IconMenu iconButtonElement={<IconButton iconClassName="material-icons" tooltipPosition="bottom-center"
-  tooltip="Sky">keyboard_arrow_down</IconButton>}>
-  <MenuItem primaryText="Send feedback" />
-  <MenuItem primaryText="Settings" />
-  <MenuItem primaryText="Help" />
-  <MenuItem primaryText="Sign out" onClick={this.logout}/>
-</IconMenu>     </div>                   </div>
-                        }>
+                        <FlatButton label={user} onClick={this.userClicked}/>}>
                     </AppBar>
-                    <Toolbar>
-                      <ToolbarGroup key={0} float="left">
-                          <RaisedButton label="Create box" primary={true} onClick={this.addItem} />
-
-                      </ToolbarGroup>
-                      <ToolbarGroup key={1} float="right">
-
-
-                      </ToolbarGroup>
-                    </Toolbar>
+                    <LeftNav ref="leftNav" onChange={this.navClick} docked={false} menuItems={menuItems} />
             </div>
         )
     }

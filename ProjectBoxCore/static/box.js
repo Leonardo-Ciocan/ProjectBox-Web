@@ -25,6 +25,7 @@ console.log("starting");
     var MenuItem = require('material-ui/lib/menus/menu-item');
     var IconMenu = require('material-ui/lib/menus/icon-menu');
     var MenuDivider = require('material-ui/lib/menus/menu-divider');
+    var TextField = require('material-ui/lib/text-field');
 
 themeManager.component.appBar.height = 48;
 var CustomTheme = {
@@ -144,7 +145,7 @@ themeManager.setTheme(CustomTheme);
         },
 
        getInitialState: function(){
-            return {items: this.props.data};
+            return {items: this.props.data , filter : []};
         },
         childContextTypes: {
             muiTheme:React.PropTypes.object
@@ -183,22 +184,39 @@ themeManager.setTheme(CustomTheme);
                }.bind(this)
         );
 	},
+        search:function(e){
+
+            var txt = e.target.value;
+            var r=generateFilter(txt);
+            var c =[ r ];
+            this.setState({
+                filters : r == undefined ? [] : c
+            });
+        },
         logout:function(){
             window.location="/logout/";
         },
         render: function(){
+
             console.log(this.props.box);
             var mainStyle={
                 position:"relative",
                 width:"100%",
                 height:"100%"
             };
+            var leftNav={
+                position:"absolute",
+                top:"100px",
+                right:30,
+                width:"270px"
+            };
             var containerStyle ={
                 position:"absolute",
                 top:"100px",
                 bottom:0,
+                right:"300px",
                 left:0,
-                right:0
+                padding:"10px"
             };
             var iconMenuItems = [
               { payload: '1', text: 'Download' },
@@ -227,27 +245,21 @@ themeManager.setTheme(CustomTheme);
 </IconMenu>     </div>                   </div>
                         }>
                     </AppBar>
-                    <Toolbar>
-                      <ToolbarGroup key={0} float="left">
-                          <RaisedButton label="Add new item" primary={true} onClick={this.addItem} />
+                    <div>
+                        <RaisedButton style={{float:"left",margin:"20px"}} label="Add new item" primary={true} onClick={this.addItem} />
+                        <TextField onKeyUp={this.search} hintText="Search" style={{float:"right",margin:"20px"}}/>
 
-                      </ToolbarGroup>
-                      <ToolbarGroup key={1} float="right">
-                          <FlatButton label="Box options" onClick={this.showProperties} />
+                    </div>
 
-                      </ToolbarGroup>
-                    </Toolbar>
-
-                    <div style={containerStyle}>
-                        <BoxItemList data={this.state.items} structure={box.structure} filter={this.props.filter}/>
-                   </div>
-
-                    <div className="box-panel" onClick={this.sideBarClick}>
-                        <Paper style={{height:"100%"}}>
-                            <SideBarHeader/>
-                            <MemberList members={box.members}/>
+                    <div style={leftNav}>
+                        <Paper style={{width:"100%"  ,margin:"10px" , padding:"10px",marginTop:"20px"}}>
+                             <SideBarHeader/>
+                            <MemberList style={{paddingTop:"0px"}} members={box.members}/>
                         </Paper>
                     </div>
+                    <div style={containerStyle}>
+                        <BoxItemList data={this.state.items} structure={box.structure} filters={this.state.filters}/>
+                   </div>
                 </div>
 
             );
@@ -379,13 +391,12 @@ var SideBarHeader = React.createClass({
     },
     render:function(){
                 return(
-                    <div>
-                        <h1 className="side-panel-header" style={{"text-align":"center"}}>{ box.name }</h1>
-                        <h4  style={{"text-align":"center"}}>Created by <span style={{color:"dodgerblue"}}>{this.state.name}</span></h4>
-                        <h4 style={{color:"gray" , marginTop:"30px"}}>Contributors:</h4>
+                    <div style={{}}>
+                        <h1 className="side-panel-header" style={{"text-align":"center",color:CustomTheme.getPalette().primary1Color}}>{ box.name }</h1>
+                        <h4  style={{"text-align":"center",paddingBottom:"20px" , borderBottom:"1px solid gray"}}>Created by <span style={{color:CustomTheme.getPalette().primary1Color}}>{this.state.name}</span></h4>
+                        <h4 style={{color:"gray" , marginTop:"30px",textAlign:"center"}}>MEMBERS</h4>
 
-                        <input id="add-member" type="text" placeholder="Enter username of contributor"
-                               className="form-control  floating-label" onKeyDown={this.addMember} />
+                        <TextField floatingLabelText="Add member by username" onKeyDown={this.addMember}/>
                     </div>
                 )
     }
@@ -423,13 +434,31 @@ var MemberItem = React.createClass({
         )
     },
     render:function(){
+        var memberStyle={
+            padding:"8px",
+            background: CustomTheme.getPalette().primary1Color,
+            color:"white",
+            borderRadius:"5px"
+        };
         return (
-            <h4>{this.state.name}</h4>
+            <h4 style={memberStyle}>{this.state.name}</h4>
         );
     }
 });
 
 
 function generateFilter(input){
-
+    var filter = {
+        target : "",
+        type   : "",
+        param  : ""
+    }
+    var textFilter = /(.*) is (.*)/g;
+    var textMatches = textFilter.exec(input);
+    if(textMatches != null && textMatches.length > 0){
+        filter.type = "text";
+        filter.param = textMatches[2];
+        filter.target = textMatches[1];
+        return filter;
+    }
 }

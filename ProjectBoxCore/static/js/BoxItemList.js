@@ -17,15 +17,16 @@ var BoxItemList = React.createClass({
       if(box._data != undefined){
           dt = box._data.slice(0);
       }
-      if(this.props.filter != "") {
+      console.log(this.props.filters);
+      if(this.props.filters != undefined && this.props.filters.length > 0) {
           dt = jQuery.grep(dt, function (v,i) {
-              var info = this.props.filter;
-              var val = v[this.props.filter[1]];
+              var filter = this.props.filters[0];
+              var val = v[filter.target].toLowerCase();
               if (val == undefined) return false;
-              return val.indexOf(this.props.filter[2]) != -1;
+              return val.indexOf(filter.param.toLowerCase()) != -1;
           }.bind(this));
           console.log("filtering with ");
-          console.log(this.props.filter);
+          console.log(this.props.filters[0]);
       }
     var boxes = dt.map(function (item) {
       return (

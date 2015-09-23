@@ -16,8 +16,26 @@
     "RobotoDraft", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.big-box-new{
+    float:left;
+    margin: auto;
+    cursor: pointer;
+    overflow: hidden;
+    padding: 0px;
+    transition: transform 0.3s;
+    position: absolute;
+    top:5px;
+    left:5px;
+    right:5px;
+    bottom:5px;
+    border-radius:5px;
+    border:2px dashed gray;
+    font-family:
+    "RobotoDraft", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .big-box:hover{
-    transform: scale(1.05) translateY(-5px);
+    transform: scale(1.025) translateY(-5px);
 }
 
 .big-box:active{
@@ -47,6 +65,13 @@
     text-align: center;
     color:#fff;
     margin-top: 30px;
+}
+
+
+.big-box-name-new{
+    text-align: center;
+    color: #b5b5b5;
+    margin-top: 40px;
 }
 
 .big-box-items{
@@ -148,11 +173,28 @@ h1 {
     margin: 0;
     padding-top: 0;
     letter-spacing: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.87);
     line-height: 48px;
     -webkit-box-flex: 1;
     flex: 1;
     display: inline-block;
+    margin-top: -10px!important;
+}
+
+.username2{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0;
+    padding-top: 0;
+    letter-spacing: 0;
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.87);
+    line-height: 48px;
+    -webkit-box-flex: 1;
+    flex: 1;
+    display: inline-block;
+    margin-top: 0px!important;
 }
