@@ -1,5 +1,29 @@
 var React = require("react");
 console.log("loading");
+    var AppBar = require('material-ui/lib/app-bar');
+    var FlatButton = require('material-ui/lib/flat-button');
+    var UserMenu = require('./UserMenu');
+    var Paper = require("material-ui/lib/paper");
+
+var ThemeManager =  require('material-ui/lib/styles').ThemeManager;
+    var themeManager = new ThemeManager();
+themeManager.component.appBar.height = 48;
+var CustomTheme = {
+    getPalette() {
+        return {
+            primary1Color:  "#33c9FF",
+            accent1Color: "#3399FF"
+        };
+    },
+    getComponentThemes(palette){
+        return {
+            appBar: {
+                height: 48
+            }
+        }
+    }
+};
+themeManager.setTheme(CustomTheme);
 $(document).ready(function(){
 
 
@@ -14,6 +38,14 @@ $(document).ready(function(){
         $("#btn-create").text("CREATE "+ $(this).val() + " BOX");
     });
 
+    $(document).click(function(){
+       $(".user-menu").animate({opacity:0} , 500 , function(){
+           console.log("xxx");
+           $(".user-menu").css("visibility","collapsed");
+       });
+    });
+
+
 });
 
 function resizeInput() {
@@ -26,12 +58,47 @@ function s_unique(){
 
 var ColorPicker = React.createClass({
         onColor:function(e){
-            this.props.onColor(e.target.style.background);
+            var cl = e.target.style.background;
+            this.props.onColor(cl);
+            $(e.target).parent().children().css("border","2px solid black");
+            //$(e.target).css("border","2px solid white");
+
+            CustomTheme.getPalette = function() {
+                return {
+                    primary1Color: cl,
+                    accent1Color: cl
+                };
+            }.bind(this);
+
+            React.render(
+              <CollumnList onCreate={create_box}/>,
+              document.getElementById('container')
+            );
+
+            React.render(
+              <CreatePage/>,
+              document.getElementById('base')
+            );
         },
         render: function () {
-            var colors = ["#245124" , "#4F6693" , "#AD4575", "#212121", "#EFD004"];
+            var colors = [
+                "#245124" ,
+                "#4F6693" ,
+                "#AD4575",
+                "#212121",
+                "#EFD004",
+                "#CC0000",
+                "#FF6600",
+                "#CC0099",
+                "#993300",
+                "#33CC33"];
             var cols =  colors.map(function(col){
-               return (<div style={{"background":col}} className="color" onClick={this.onColor}>
+               return (<div
+                          col={col}
+                          style={{
+                            "background":col,
+                            border:"2px solid black"
+                       }} className="color" onClick={this.onColor}>
 
                       </div>)
             }.bind(this));
@@ -47,6 +114,19 @@ var ColorPicker = React.createClass({
 
 var data = [{type:"Text" , name:""}];
 var CollumnList = React.createClass({
+    contextTypes: {
+                router:React.PropTypes.func
+        },
+
+
+        childContextTypes: {
+            muiTheme:React.PropTypes.object
+        },
+        getChildContext:function() {
+            return {
+                muiTheme: themeManager.getCurrentTheme()
+            };
+        },
     getInitialState:function(){
         return {items:data , color:"green"};
     },
@@ -67,6 +147,7 @@ var CollumnList = React.createClass({
         this.setState({color:col});
     },
    render:function(){
+       console.log(CustomTheme.getPalette().primary1Color);
        var i = 0;
         var collumns = this.state.items.map(function (collumn) {
                 i++;
@@ -78,11 +159,11 @@ var CollumnList = React.createClass({
             }.bind(this)
         );
        return (
-            <div>
+            <Paper style={{margin:"10px",padding:"10px",overflow:"hidden"}}>
                 <ColorPicker onColor={this.onColor}/>
                 {collumns}
                 <button id="btn-create" className="btn btn-primary" onClick={this.onCreate}>Create</button>
-            </div>
+            </Paper>
        )
    }
 });
@@ -129,49 +210,39 @@ var Collumn = React.createClass({
        this.props.id = id;
        var elem = <div/>;
        console.log(this.state.type+">>>>:");
-       if(this.state.type.toLowerCase() == "choice"){
-            elem  = <div>
-                       <h1 className="create-line line-small">Each one has a
-                           <select onChange={this.changedType}>
+       var options = <select onChange={this.changedType} style={{color:CustomTheme.getPalette().primary1Color}}>
                                <option value="Text" checked>piece of text</option>
                                <option value="Number">number</option>
                                <option value="Image">image</option>
                                <option value="Checkbox">checkbox</option>
                                <option value="Choice">choice</option>
                                <option value="Range">number between</option>
-                            </select>
-                           called <input placeholder="name" id={id+"-name"} type="text" onFocus={this.onAdd}  onChange={this.saveName}/>
-                            which can be : <input placeholder="e.g Easy,Medium,Hard" id={id+"-choice"} type="text" onChange={this.saveChoices}/></h1>
+                               <option value="Date">date</option>
+                            </select>;
+
+
+
+       if(this.state.type.toLowerCase() == "choice"){
+            elem  = <div>
+                       <h1 className="create-line line-small">Each one has a
+                           {options}
+                           called <input placeholder="name" id={id+"-name"} type="text" onFocus={this.onAdd}  onChange={this.saveName} style={{color:CustomTheme.getPalette().primary1Color}}/>
+                            which can be : <input placeholder="e.g Easy,Medium,Hard" id={id+"-choice"} type="text" onChange={this.saveChoices} style={{color:CustomTheme.getPalette().primary1Color}}/></h1>
                    </div>
-       }else if (this.state.type.toLowerCase() == "text" || this.state.type.toLowerCase() == "number" || this.state.type.toLowerCase() == "image" || this.state.type.toLowerCase() == "checkbox"){
+       }else if (this.state.type.toLowerCase() == "text" ||this.state.type.toLowerCase() == "date" || this.state.type.toLowerCase() == "number" || this.state.type.toLowerCase() == "image" || this.state.type.toLowerCase() == "checkbox"){
            elem  = <div>
                <h1 className="create-line line-small">Each one has a
-                   <select onChange={this.changedType}>
-                                <option value="Text" checked>piece of text</option>
-                               <option value="Number">number</option>
-                               <option value="Image">image</option>
-                               <option value="Checkbox">checkbox</option>
-                               <option value="Choice">choice</option>
-                               <option value="Range">number between</option>
-
-                    </select>
-                   called <input id={id+"-name"} type="text" onFocus={this.onAdd} onChange={this.saveName}/></h1>
+                  {options}
+                   called <input style={{color:CustomTheme.getPalette().primary1Color}} id={id+"-name"} type="text" onFocus={this.onAdd} onChange={this.saveName}/></h1>
            </div>
        }
        else if(this.state.type.toLowerCase() == "range"){
             elem  = <div>
                <h1 className="create-line line-small">Each one has a
-                   <select onChange={this.changedType}>
-                                <option value="Text" checked>piece of text</option>
-                               <option value="Number">number</option>
-                               <option value="Image">image</option>
-                               <option value="Checkbox">checkbox</option>
-                               <option value="Choice">choice</option>
-                               <option value="Range">number between</option>
-                    </select>
-                   <input className="short-input" id={id+"-min"}   type="text"  onChange={this.saveMin}/> and
-                   <input className="short-input" id={id+"-max"}   type="text"  onChange={this.saveMax}/>
-                   called <input id={id+"-name"} type="text" onFocus={this.onAdd} onChange={this.saveName}/></h1>
+                   {options}
+                   <input style={{color:CustomTheme.getPalette().primary1Color}} className="short-input" id={id+"-min"}   type="text"  onChange={this.saveMin}/> and
+                   <input style={{color:CustomTheme.getPalette().primary1Color}} className="short-input" id={id+"-max"}   type="text"  onChange={this.saveMax}/>
+                   called <input style={{color:CustomTheme.getPalette().primary1Color}} id={id+"-name"} type="text" onFocus={this.onAdd} onChange={this.saveName}/></h1>
            </div>
        }
        return (
@@ -202,3 +273,56 @@ React.render(
   document.getElementById('container')
 );
 
+var CreatePage = React.createClass({
+    contextTypes: {
+                router:React.PropTypes.func
+        },
+
+
+        childContextTypes: {
+            muiTheme:React.PropTypes.object
+        },
+        getChildContext:function() {
+            return {
+                muiTheme: themeManager.getCurrentTheme()
+            };
+        },
+    addItem:function(){
+
+    },
+    logout:function(){
+        window.location = "/logout/";
+    },
+    userClicked:function(e){
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            console.log(this.refs.userMenu.getDOMNode());
+             $(this.refs.userMenu.getDOMNode()).css("visibility","visible");
+            $(this.refs.userMenu.getDOMNode()).animate({opacity:1},200);
+    },
+    render:function(){
+
+        return(
+            <div>
+                <AppBar
+                        style={
+                            {
+                                height:"40px",
+                                backgroundColor:CustomTheme.getPalette().primary1Color
+                            }
+                        }
+                        title="Project Box"
+iconElementLeft={<div/>}
+                     iconElementRight={
+                        <FlatButton label={user} onClick={this.userClicked}/>}>
+                    </AppBar>
+                <UserMenu ref="userMenu" logout={this.logout} color={CustomTheme.getPalette().primary1Color}/>
+            </div>
+        )
+    }
+});
+
+React.render(
+  <CreatePage/>,
+  document.getElementById('base')
+);

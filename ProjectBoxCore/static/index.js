@@ -19,6 +19,7 @@ var RaisedButton = require('material-ui/lib/raised-button');
     var IconMenu = require('material-ui/lib/menus/icon-menu');
     var LeftNav = require('material-ui/lib/left-nav');
     var MenuDivider = require('material-ui/lib/menus/menu-divider');
+    var UserMenu = require('./js/UserMenu');
 
 $(document).ready(function() {
     console.log("hey");
@@ -40,6 +41,12 @@ $(document).ready(function() {
     });
 
 
+    $(document).click(function(){
+       $(".user-menu").animate({opacity:0} , 500 , function(){
+           $(".user-menu").css("visibility","collapsed");
+       });
+    });
+
 });
 
 
@@ -47,8 +54,8 @@ themeManager.component.appBar.height = 48;
 var CustomTheme = {
     getPalette() {
         return {
-            primary1Color:  "#2368d2",
-            accent1Color: "#2368d2"
+            primary1Color:  "#3399FF",
+            accent1Color: "#3399FF"
         };
     },
     getComponentThemes(palette){
@@ -81,8 +88,12 @@ var IndexPage = React.createClass({
     logout:function(){
         window.location = "/logout/";
     },
-    userClicked:function(){
-      this.refs.leftNav.toggle();
+    userClicked:function(e){
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            console.log(this.refs.userMenu.getDOMNode());
+             $(this.refs.userMenu.getDOMNode()).css("visibility","visible");
+            $(this.refs.userMenu.getDOMNode()).animate({opacity:1},200);
     },
     navClick:function(e,i,item){
         item.action();
@@ -109,7 +120,7 @@ iconElementLeft={<div/>}
                      iconElementRight={
                         <FlatButton label={user} onClick={this.userClicked}/>}>
                     </AppBar>
-                    <LeftNav ref="leftNav" onChange={this.navClick} docked={false} menuItems={menuItems} />
+                <UserMenu ref="userMenu" logout={this.logout} color={CustomTheme.getPalette().primary1Color}/>
             </div>
         )
     }

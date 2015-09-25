@@ -23,9 +23,12 @@ console.log("starting");
     var FloatingActionButton = require("material-ui/lib/floating-action-button");
     var BoxItemList= require("./js/BoxItemList");
     var MenuItem = require('material-ui/lib/menus/menu-item');
+    var Menu = require('material-ui/lib/menus/menu');
     var IconMenu = require('material-ui/lib/menus/icon-menu');
     var MenuDivider = require('material-ui/lib/menus/menu-divider');
     var TextField = require('material-ui/lib/text-field');
+    var Sidebar = require('react-sidebar');
+    var UserMenu = require('./js/UserMenu');
 
 themeManager.component.appBar.height = 48;
 var CustomTheme = {
@@ -145,7 +148,7 @@ themeManager.setTheme(CustomTheme);
         },
 
        getInitialState: function(){
-            return {items: this.props.data , filter : []};
+            return {items: this.props.data , filter : [] , sidebarOpen: false};
         },
         childContextTypes: {
             muiTheme:React.PropTypes.object
@@ -196,6 +199,13 @@ themeManager.setTheme(CustomTheme);
         logout:function(){
             window.location="/logout/";
         },
+        showNav:function(e){
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+            console.log(this.refs.userMenu.getDOMNode());
+          $(this.refs.userMenu.getDOMNode()).css("visibility","visible");
+          $(this.refs.userMenu.getDOMNode()).animate({opacity:1},200);
+        },
         render: function(){
 
             console.log(this.props.box);
@@ -222,10 +232,11 @@ themeManager.setTheme(CustomTheme);
               { payload: '1', text: 'Download' },
               { payload: '2', text: 'More Info' }
             ];
+
             return (
                 <div style={mainStyle}>
 
-                    <AppBar
+<AppBar
                         style={
                             {
                                 height:"40px"
@@ -233,17 +244,7 @@ themeManager.setTheme(CustomTheme);
                         }
                         title={this.props.data.name}
                      iconElementLeft={<IconButton iconClassName="material-icons" onClick={this.onHome}>arrow_back</IconButton>}
-                     iconElementRight={
-                        <div>
-                            <h1 className="username" >{user} </h1>
-<div  className="username"  ><IconMenu iconButtonElement={<IconButton iconClassName="material-icons" tooltipPosition="bottom-center"
-  tooltip="Sky">keyboard_arrow_down</IconButton>}>
-  <MenuItem primaryText="Send feedback" />
-  <MenuItem primaryText="Settings" />
-  <MenuItem primaryText="Help" />
-  <MenuItem primaryText="Sign out" onClick={this.logout}/>
-</IconMenu>     </div>                   </div>
-                        }>
+                     iconElementRight={<FlatButton label={user} onClick={this.showNav}/>}>
                     </AppBar>
                     <div>
                         <RaisedButton style={{float:"left",margin:"20px"}} label="Add new item" primary={true} onClick={this.addItem} />
@@ -254,12 +255,18 @@ themeManager.setTheme(CustomTheme);
                     <div style={leftNav}>
                         <Paper style={{width:"100%"  ,margin:"10px" , padding:"10px",marginTop:"20px"}}>
                              <SideBarHeader/>
-                            <MemberList style={{paddingTop:"0px"}} members={box.members}/>
                         </Paper>
+                        <Paper style={{width:"100%"  ,margin:"10px" , padding:"10px"}}>
+                            <MemberList style={{paddingTop:"0px"}} members={box.members}/>
+                            </Paper>
                     </div>
                     <div style={containerStyle}>
                         <BoxItemList data={this.state.items} structure={box.structure} filters={this.state.filters}/>
                    </div>
+
+                    <UserMenu ref="userMenu" logout={this.logout} color={CustomTheme.getPalette().primary1Color}/>
+
+
                 </div>
 
             );
@@ -303,7 +310,11 @@ $(document).ready(function(){
 
 
 
-
+    $(document).click(function(){
+       $(".user-menu").animate({opacity:0} , 500 , function(){
+           $(".user-menu").css("visibility","collapsed");
+       });
+    });
 
 
 
@@ -390,13 +401,14 @@ var SideBarHeader = React.createClass({
         }
     },
     render:function(){
+
                 return(
                     <div style={{}}>
-                        <h1 className="side-panel-header" style={{"text-align":"center",color:CustomTheme.getPalette().primary1Color}}>{ box.name }</h1>
-                        <h4  style={{"text-align":"center",paddingBottom:"20px" , borderBottom:"1px solid gray"}}>Created by <span style={{color:CustomTheme.getPalette().primary1Color}}>{this.state.name}</span></h4>
-                        <h4 style={{color:"gray" , marginTop:"30px",textAlign:"center"}}>MEMBERS</h4>
+                        <h1 className="side-panel-header" style={{
+                        "text-align":"center",color:CustomTheme.getPalette().primary1Color , fontSize:"24pt"
+                        }}>{ box.name.toUpperCase()  }</h1>
+                        <h4  style={{"text-align":"center",paddingBottom:"20px" }}>CREATED BY <span style={{color:CustomTheme.getPalette().primary1Color}}>@{this.state.name.toUpperCase()}</span></h4>
 
-                        <TextField floatingLabelText="Add member by username" onKeyDown={this.addMember}/>
                     </div>
                 )
     }
@@ -414,7 +426,9 @@ var MemberList = React.createClass({
         });
         console.log(content);
         return (
-            <div>{content}</div>
+            <div><h4 style={{color:"gray" ,textAlign:"center"}}>MEMBERS</h4>
+                        <TextField floatingLabelText="Add member by username" onKeyDown={this.addMember}/>
+            <div>{content}</div></div>
         );
     }
 });
@@ -441,7 +455,7 @@ var MemberItem = React.createClass({
             borderRadius:"5px"
         };
         return (
-            <h4 style={memberStyle}>{this.state.name}</h4>
+            <h4 style={memberStyle}>@{this.state.name}</h4>
         );
     }
 });

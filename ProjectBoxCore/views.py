@@ -128,7 +128,7 @@ def create_box(request):
         box = boxes.insert({"name": name , "structure" : structure , "creator" : request.user.id , "color":request.POST["color"]})
         return HttpResponse(str(box))
     else:
-        return render(request,"createbox.html")
+        return render(request,"createbox.html",{"username":request.user.username})
 
 @login_required(login_url="/login/")
 @api_view(["POST"])

@@ -24,6 +24,9 @@
          <link href="{% static "core.css" %}" rel="stylesheet"/>
          <script src="{% static "base.js" %}"></script>
 
+        <script>
+            var user = "{{ username }}";
+        </script>
     <meta charset="UTF-8">
     <title>
         Login to app
@@ -32,17 +35,17 @@
 <body>
 
             {% csrf_token %}
-                <div style="background:#404fb8;height:170px;width:100%">
 
-                </div>
-                <div class="create-panel panel panel-default">
+                <div style="margin-top: 80px">
                     <div>
                         <h1 class="create-line">I want to keep track of <input type="text" id="box-name" /></h1>
                         <div id="container"></div>
                     </div>
                 </div>
-        <script src="/static/build/create.js"></script>
+                <div id="base" style="position: absolute;left:0;right:0;top:0;height:48px;width:100%;">
 
+                </div>
+        <script src="/static/build/create.js"></script>
 
 </body>
 </html>

@@ -1,3 +1,4 @@
+
 .big-box{
     float:left;
     margin: auto;
@@ -10,7 +11,7 @@
     left:5px;
     right:5px;
     bottom:5px;
-    background: #2368d2;
+    background: #3399FF;
     border-radius:5px;
     font-family:
     "RobotoDraft", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -35,6 +36,10 @@
 }
 
 .big-box:hover{
+
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.15);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.15);
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.15);
     transform: scale(1.025) translateY(-5px);
 }
 
@@ -197,4 +202,33 @@ h1 {
     flex: 1;
     display: inline-block;
     margin-top: 0px!important;
+}
+
+
+.user-menu-logout{
+    background: rgba(0, 0, 0, 0.12);
+    color:white;
+    width:100%;
+
+    padding:10px;
+    padding-right: 30px;
+    text-align: right;
+    transition: background 0.5s;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.user-menu-logout:hover{
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.user-menu{
+    visibility: collapse;
+    opacity: 0;
+    position:absolute;
+    top:48px;
+    right:0px;
+    width:220px;
+    font-family:
+    "RobotoDraft", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

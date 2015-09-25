@@ -2,6 +2,7 @@ var React = require('react');
 var TextField = require('material-ui/lib/text-field');
 var Slider = require('material-ui/lib/slider');
 var Checkbox = require('material-ui/lib/checkbox');
+var DatePicker = require('material-ui/lib/date-picker/date-picker');
 var DropDownMenu = require('material-ui/lib/drop-down-menu');
 
 var BoxItemRow = React.createClass({
@@ -65,6 +66,8 @@ var BoxItemRow = React.createClass({
           }
           $.material.init();
 
+
+
       },
     saveRange:function(e,value){
             var payload = {};
@@ -100,6 +103,21 @@ var BoxItemRow = React.createClass({
             }
                     this.props.data[this.props.row.name.toLowerCase()] = $("#"+this.props.id).val();
 
+    },
+    saveDate:function(e,date){
+
+            var payload = {};
+            var value = date.toISOString();
+            payload[this.props.row.name.toLowerCase()] = value;
+
+            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
+                this.props.data[this.props.row.name.toLowerCase()] = value;
+                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
+                payload["item_id"]= this.props.data["_id"]["$oid"];
+                payload["id"] = box._id["$oid"];
+                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
+                $.post("/box/" , payload);
+            }
     },
       render:function() {
 
@@ -170,6 +188,26 @@ var BoxItemRow = React.createClass({
                                 </label>
                                     <Slider defaultValue={parseInt(content)} min={this.props.row.min} max={this.props.row.max} onChange={this.saveRange} />
                            </div>;
+          }
+          else if(this.props.row.type.toLowerCase() === "date") {
+              var datepicker = content != undefined ?
+                  <DatePicker  hintText="Portrait Dialog"
+                               formatDate={function(date){
+  return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+}}
+                                             value={new Date(content)}
+                                            onChange={this.saveDate}/>
+                  :
+                        <DatePicker  hintText="Portrait Dialog"
+                                            onChange={this.saveDate}/>;
+
+          elem = <div style={{width: "100%",overflow:"hidden"}}>
+                                <label style={{width: "100%"}}>
+                                     {name}
+                                </label>
+              {datepicker}
+
+                 </div>
           }
           else if(this.props.row.type.toLowerCase() === "image") {
               elem =
