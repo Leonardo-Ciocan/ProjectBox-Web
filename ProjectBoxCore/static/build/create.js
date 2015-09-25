@@ -29,6 +29,7 @@ console.log("loading");
     var FlatButton = require('material-ui/lib/flat-button');
     var UserMenu = require('./UserMenu');
     var Paper = require("material-ui/lib/paper");
+    var IconButton = require('material-ui/lib/icon-button');
 
 var ThemeManager =  require('material-ui/lib/styles').ThemeManager;
     var themeManager = new ThemeManager();
@@ -85,7 +86,7 @@ var ColorPicker = React.createClass({displayName: "ColorPicker",
         onColor:function(e){
             var cl = e.target.style.background;
             this.props.onColor(cl);
-            $(e.target).parent().children().css("border","2px solid black");
+            //$(e.target).parent().children().css("border","2px solid black");
             //$(e.target).css("border","2px solid white");
 
             CustomTheme.getPalette = function() {
@@ -122,7 +123,7 @@ var ColorPicker = React.createClass({displayName: "ColorPicker",
                           col: col, 
                           style: {
                             "background":col,
-                            border:"2px solid black"
+                            border:"2px solid white"
                        }, className: "color", onClick: this.onColor}
 
                       ))
@@ -317,7 +318,9 @@ var CreatePage = React.createClass({displayName: "CreatePage",
     },
     logout:function(){
         window.location = "/logout/";
-    },
+    },onHome:function(){
+            window.location = "/";
+        },
     userClicked:function(e){
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
@@ -337,7 +340,7 @@ var CreatePage = React.createClass({displayName: "CreatePage",
                             }, 
                         
                         title: "Project Box", 
-iconElementLeft: React.createElement("div", null), 
+                     iconElementLeft: React.createElement(IconButton, {iconClassName: "material-icons", onClick: this.onHome}, "arrow_back"), 
                      iconElementRight: 
                         React.createElement(FlatButton, {label: user, onClick: this.userClicked})}
                     ), 
@@ -352,7 +355,7 @@ React.render(
   document.getElementById('base')
 );
 
-},{"./UserMenu":1,"material-ui/lib/app-bar":3,"material-ui/lib/flat-button":6,"material-ui/lib/paper":10,"material-ui/lib/styles":16,"react":210}],3:[function(require,module,exports){
+},{"./UserMenu":1,"material-ui/lib/app-bar":3,"material-ui/lib/flat-button":6,"material-ui/lib/icon-button":8,"material-ui/lib/paper":10,"material-ui/lib/styles":16,"react":210}],3:[function(require,module,exports){
 (function (process){
 'use strict';
 
