@@ -62,7 +62,7 @@ var BoxItemRow = React.createClass({
                     .each(function() { $(this).attr("selected" ,  (this.text == data[row.name.toLowerCase()])); });
           }
           else if(this.props.row.type.toLowerCase() == "image"){
-                $("#"+this.props.id).css("background-image" ,"url("+this.props.data[this.props.row.name.toLowerCase()] +")");
+                //$("#"+this.props.id).css("background-image" ,"url("+this.props.data[this.props.row.name.toLowerCase()] +")");
           }
           $.material.init();
 
@@ -85,23 +85,20 @@ var BoxItemRow = React.createClass({
 
     },
     saveImage:function(e){
-
-
             var input = prompt("Enter the url");
-
             var payload = {};
             var value = input;
             payload[this.props.row.name.toLowerCase()] = value;
 
             if(this.props.data[this.props.row.name.toLowerCase()] !== value){
                 this.props.data[this.props.row.name.toLowerCase()] = value;
-                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
+
                 payload["item_id"]= this.props.data["_id"]["$oid"];
                 payload["id"] = box._id["$oid"];
                 payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
                 $.post("/box/" , payload);
             }
-                    this.props.data[this.props.row.name.toLowerCase()] = $("#"+this.props.id).val();
+            this.setState({});
 
     },
     saveDate:function(e,date){
@@ -215,13 +212,23 @@ var BoxItemRow = React.createClass({
                                      {name}
                       <div>
 
-                          <div style={{height:"150px",width: "100%" ,backgroundSize:"cover", backgroundRepeat:"none",backgroundPosition:"center center"}} id={id}
+                          <div  style={{
+                                border:!(content == "" ||content==undefined) ?"" : "1px dashed " + this.props.color,
+                                height:"150px",
+                                width: "100%" ,
+                                backgroundSize:"cover",
+                                backgroundImage:"url("+content+")",
+                             backgroundRepeat:"none",
+                             backgroundPosition:"center center"}}
                               >
-
                               <h1 style={{pointerEvents:"none" , visibility: ((content == "" ||content==undefined) ? "visible" : "collapse"),
-                                            color:"#000",
+                                            verticalAlign:"middle",
+                                            lineHeight:"150px",
+                                            color:this.props.color,
+                                            margin:"0 auto",
+                                            padding:"0",
                                             textAlign:"center"
-                               }}>Click to add {name} image</h1>
+                               }}>Click to add {name}</h1>
                           </div>
 
 

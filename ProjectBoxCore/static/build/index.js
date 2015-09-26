@@ -42,12 +42,6 @@ $(document).ready(function() {
     });
 
 
-    $(document).click(function(){
-       $(".user-menu").animate({opacity:0} , 500 , function(){
-           $(".user-menu").css("visibility","collapsed");
-       });
-    });
-
 });
 
 
@@ -136,6 +130,7 @@ var Paper = require("material-ui/lib/paper");
 var IconButton =  require("material-ui/lib/icon-button");
 
 var BoxItem = React.createClass({displayName: "BoxItem",
+
     componentDidMount:function(){
        var item = this.props.item;
        if("_id" in this.props.item){
@@ -167,11 +162,10 @@ var BoxItem = React.createClass({displayName: "BoxItem",
     },
   render: function() {
         var item = this.props.item;
-        console.log(this.props.onDelete);
         var rows = this.props.structure.map(function (row) {
 
           return (
-            React.createElement(BoxItemRow, {row: row, data: item}
+            React.createElement(BoxItemRow, {color: this.props.color, row: row, data: item}
             )
           );
         }.bind(this));
@@ -179,9 +173,10 @@ var BoxItem = React.createClass({displayName: "BoxItem",
       var barStyle = {
         float:"right"
       };
-
+        console.log(this.props.cardWidth);
+      var key = unique();
         return (
-            React.createElement("div", {style: {float:"left" , padding:"10px",width:"33%"}}, 
+            React.createElement("div", {key: key, style: {float:"left" , padding:"10px",width:this.props.cardWidth +"px"}}, 
                 React.createElement(Paper, {zDepth: 1, style: {width:"100%",padding:"10px",paddingTop:"0px"}}, 
                             React.createElement("div", {style: {overflow:"hidden"}}, 
                                 rows, 
@@ -212,6 +207,18 @@ var BoxItemList = React.createClass({displayName: "BoxItemList",
     onDelete:function(){
         this.setState({});
     },
+        updateDimensions: function() {
+            this.setState({width: $(window).width()-320, height: $(window).height()-320});
+        },
+        componentWillMount: function() {
+            this.updateDimensions();
+        },
+        componentDidMount: function() {
+            window.addEventListener("resize", this.updateDimensions);
+        },
+        componentWillUnmount: function() {
+            window.removeEventListener("resize", this.updateDimensions);
+        },
   render: function() {
     var structure = this.props.structure;
       var data = this.props.data;
@@ -230,9 +237,13 @@ var BoxItemList = React.createClass({displayName: "BoxItemList",
           console.log("filtering with ");
           console.log(this.props.filters[0]);
       }
+      var cardMax = Math.floor(this.state.width / 250);
+                var cardWidth = this.state.width / cardMax;
+                console.log(cardWidth);
+
     var boxes = dt.map(function (item) {
       return (
-        React.createElement(BoxItem, {key: item["_id"]["$oid"], item: item, structure: structure, data: data, onDelete: this.onDelete}
+        React.createElement(BoxItem, {color: this.props.color, cardWidth: cardWidth, key: item["_id"]["$oid"], item: item, structure: structure, data: data, onDelete: this.onDelete}
         )
       );
     }.bind(this));
@@ -316,7 +327,7 @@ var BoxItemRow = React.createClass({displayName: "BoxItemRow",
                     .each(function() { $(this).attr("selected" ,  (this.text == data[row.name.toLowerCase()])); });
           }
           else if(this.props.row.type.toLowerCase() == "image"){
-                $("#"+this.props.id).css("background-image" ,"url("+this.props.data[this.props.row.name.toLowerCase()] +")");
+                //$("#"+this.props.id).css("background-image" ,"url("+this.props.data[this.props.row.name.toLowerCase()] +")");
           }
           $.material.init();
 
@@ -339,23 +350,20 @@ var BoxItemRow = React.createClass({displayName: "BoxItemRow",
 
     },
     saveImage:function(e){
-
-
             var input = prompt("Enter the url");
-
             var payload = {};
             var value = input;
             payload[this.props.row.name.toLowerCase()] = value;
 
             if(this.props.data[this.props.row.name.toLowerCase()] !== value){
                 this.props.data[this.props.row.name.toLowerCase()] = value;
-                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
+
                 payload["item_id"]= this.props.data["_id"]["$oid"];
                 payload["id"] = box._id["$oid"];
                 payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
                 $.post("/box/" , payload);
             }
-                    this.props.data[this.props.row.name.toLowerCase()] = $("#"+this.props.id).val();
+            this.setState({});
 
     },
     saveDate:function(e,date){
@@ -469,13 +477,23 @@ var BoxItemRow = React.createClass({displayName: "BoxItemRow",
                                      name, 
                       React.createElement("div", null, 
 
-                          React.createElement("div", {style: {height:"150px",width: "100%" ,backgroundSize:"cover", backgroundRepeat:"none",backgroundPosition:"center center"}, id: id
+                          React.createElement("div", {style: {
+                                border:!(content == "" ||content==undefined) ?"" : "1px dashed " + this.props.color,
+                                height:"150px",
+                                width: "100%" ,
+                                backgroundSize:"cover",
+                                backgroundImage:"url("+content+")",
+                             backgroundRepeat:"none",
+                             backgroundPosition:"center center"}
                               }, 
-
                               React.createElement("h1", {style: {pointerEvents:"none" , visibility: ((content == "" ||content==undefined) ? "visible" : "collapse"),
-                                            color:"#000",
+                                            verticalAlign:"middle",
+                                            lineHeight:"150px",
+                                            color:this.props.color,
+                                            margin:"0 auto",
+                                            padding:"0",
                                             textAlign:"center"
-                               }}, "Click to add ", name, " image")
+                               }}, "Click to add ", name)
                           )
 
 
@@ -499,19 +517,26 @@ var UserMenu = React.createClass({displayName: "UserMenu",
     logout:function(){
       this.props.logout();
     },
-   render:function(){
-       return React.createElement("div", {className: "user-menu", style: {background: this.props.color , padding:"10px"}}, 
-                        React.createElement("div", null, " ", React.createElement("div", {className: "user-menu-logout"}, 
-                            "Setting"
-                        ), 
-                         React.createElement("div", {className: "user-menu-logout"}, 
-                            "Feedback"
-                        ), 
 
-                        React.createElement("div", {onClick: this.logout, className: "user-menu-logout"}, 
-                            "Log out"
-                        ))
-              );
+    mouseOut:function(){
+        var i = this.refs.menu.getDOMNode();
+        $(i).css("visibility","collapse");
+    },
+
+   render:function(){
+       return (React.createElement("div", {ref: "menu", className: "user-menu", style: {background: this.props.color , padding:"10px"}, onMouseLeave: this.mouseOut}, 
+
+                                    React.createElement("div", {className: "user-menu-logout"}, 
+                                    "SETTING"
+                                    ), 
+                                     React.createElement("div", {className: "user-menu-logout"}, 
+                                        "FEEDBACK"
+                                    ), 
+
+                                    React.createElement("div", {onClick: this.logout, className: "user-menu-logout"}, 
+                                        "LOG OUT"
+                                    )
+              ));
    }
 });
 

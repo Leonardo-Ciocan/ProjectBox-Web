@@ -176,13 +176,15 @@ body,html,#base{
 }
 
 .user-menu{
+    font-family: "RobotoDraft", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
     visibility: collapse;
     opacity: 0;
-    position:absolute;
-    top:48px;
+    position:fixed;
+    top:8px;
     right:0px;
     width:220px;
     box-sizing: border-box;
+    z-index: 10;
 }
 
 .user-item{

@@ -39,12 +39,7 @@ $(document).ready(function(){
         $("#btn-create").text("CREATE "+ $(this).val() + " BOX");
     });
 
-    $(document).click(function(){
-       $(".user-menu").animate({opacity:0} , 500 , function(){
-           console.log("xxx");
-           $(".user-menu").css("visibility","collapsed");
-       });
-    });
+
 
 
 });
@@ -299,9 +294,9 @@ var CreatePage = React.createClass({
     userClicked:function(e){
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
-            console.log(this.refs.userMenu.getDOMNode());
+            e.nativeEvent.stopPropagation();
              $(this.refs.userMenu.getDOMNode()).css("visibility","visible");
-            $(this.refs.userMenu.getDOMNode()).animate({opacity:1},200);
+             $(this.refs.userMenu.getDOMNode()).animate({opacity:1},200);
     },
     render:function(){
 
@@ -310,6 +305,7 @@ var CreatePage = React.createClass({
                 <AppBar
                         style={
                             {
+
                                 height:"40px",
                                 backgroundColor:CustomTheme.getPalette().primary1Color
                             }
@@ -317,7 +313,7 @@ var CreatePage = React.createClass({
                         title="Project Box"
                      iconElementLeft={<IconButton iconClassName="material-icons" onClick={this.onHome}>arrow_back</IconButton>}
                      iconElementRight={
-                        <FlatButton label={user} onClick={this.userClicked}/>}>
+                        <FlatButton label={user} onClick={this.userClicked} />}>
                     </AppBar>
                 <UserMenu ref="userMenu" logout={this.logout} color={CustomTheme.getPalette().primary1Color}/>
             </div>

@@ -4,6 +4,7 @@ var Paper = require("material-ui/lib/paper");
 var IconButton =  require("material-ui/lib/icon-button");
 
 var BoxItem = React.createClass({
+
     componentDidMount:function(){
        var item = this.props.item;
        if("_id" in this.props.item){
@@ -35,11 +36,10 @@ var BoxItem = React.createClass({
     },
   render: function() {
         var item = this.props.item;
-        console.log(this.props.onDelete);
         var rows = this.props.structure.map(function (row) {
 
           return (
-            <BoxItemRow row={row} data={item}>
+            <BoxItemRow color={this.props.color} row={row} data={item}>
             </BoxItemRow>
           );
         }.bind(this));
@@ -47,9 +47,10 @@ var BoxItem = React.createClass({
       var barStyle = {
         float:"right"
       };
-
+        console.log(this.props.cardWidth);
+      var key = unique();
         return (
-            <div style={{float:"left" , padding:"10px",width:"33%"}} >
+            <div key={key} style={{float:"left" , padding:"10px",width:this.props.cardWidth +"px"}} >
                 <Paper zDepth={1}  style={{width:"100%",padding:"10px",paddingTop:"0px"}}>
                             <div style={{overflow:"hidden"}}>
                                 {rows}

@@ -41,12 +41,6 @@ $(document).ready(function() {
     });
 
 
-    $(document).click(function(){
-       $(".user-menu").animate({opacity:0} , 500 , function(){
-           $(".user-menu").css("visibility","collapsed");
-       });
-    });
-
 });
 
 

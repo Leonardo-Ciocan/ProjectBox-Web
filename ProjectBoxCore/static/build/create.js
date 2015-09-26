@@ -4,19 +4,26 @@ var UserMenu = React.createClass({displayName: "UserMenu",
     logout:function(){
       this.props.logout();
     },
-   render:function(){
-       return React.createElement("div", {className: "user-menu", style: {background: this.props.color , padding:"10px"}}, 
-                        React.createElement("div", null, " ", React.createElement("div", {className: "user-menu-logout"}, 
-                            "Setting"
-                        ), 
-                         React.createElement("div", {className: "user-menu-logout"}, 
-                            "Feedback"
-                        ), 
 
-                        React.createElement("div", {onClick: this.logout, className: "user-menu-logout"}, 
-                            "Log out"
-                        ))
-              );
+    mouseOut:function(){
+        var i = this.refs.menu.getDOMNode();
+        $(i).css("visibility","collapse");
+    },
+
+   render:function(){
+       return (React.createElement("div", {ref: "menu", className: "user-menu", style: {background: this.props.color , padding:"10px"}, onMouseLeave: this.mouseOut}, 
+
+                                    React.createElement("div", {className: "user-menu-logout"}, 
+                                    "Setting"
+                                    ), 
+                                     React.createElement("div", {className: "user-menu-logout"}, 
+                                        "Feedback"
+                                    ), 
+
+                                    React.createElement("div", {onClick: this.logout, className: "user-menu-logout"}, 
+                                        "Log out"
+                                    )
+              ));
    }
 });
 
@@ -64,12 +71,7 @@ $(document).ready(function(){
         $("#btn-create").text("CREATE "+ $(this).val() + " BOX");
     });
 
-    $(document).click(function(){
-       $(".user-menu").animate({opacity:0} , 500 , function(){
-           console.log("xxx");
-           $(".user-menu").css("visibility","collapsed");
-       });
-    });
+
 
 
 });
@@ -324,9 +326,9 @@ var CreatePage = React.createClass({displayName: "CreatePage",
     userClicked:function(e){
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
-            console.log(this.refs.userMenu.getDOMNode());
+            e.nativeEvent.stopPropagation();
              $(this.refs.userMenu.getDOMNode()).css("visibility","visible");
-            $(this.refs.userMenu.getDOMNode()).animate({opacity:1},200);
+             $(this.refs.userMenu.getDOMNode()).animate({opacity:1},200);
     },
     render:function(){
 
@@ -335,6 +337,7 @@ var CreatePage = React.createClass({displayName: "CreatePage",
                 React.createElement(AppBar, {
                         style: 
                             {
+
                                 height:"40px",
                                 backgroundColor:CustomTheme.getPalette().primary1Color
                             }, 

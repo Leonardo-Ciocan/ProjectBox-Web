@@ -9,6 +9,8 @@ console.log("starting");
     var RaisedButton = require('material-ui/lib/raised-button');
     var FlatButton = require('material-ui/lib/flat-button');
     var AppBar = require('material-ui/lib/app-bar');
+    var Snackbar = require('material-ui/lib/snackbar');
+
     var IconButton = require('material-ui/lib/icon-button');
     var FontIcon = require('material-ui/lib/font-icon');
     var Tabs = require('material-ui/lib/tabs/tabs');
@@ -35,7 +37,7 @@ var CustomTheme = {
     getPalette() {
         return {
             primary1Color: box.color || "#00CC00",
-            accent1Color: box.color || "#00CC00"
+            accent1Color: box.color || "#fff"
         };
     },
     getComponentThemes(palette){
@@ -158,9 +160,6 @@ themeManager.setTheme(CustomTheme);
                 muiTheme: themeManager.getCurrentTheme()
             };
         },
-        componentDidMount:function(){
-
-        },
         showProperties:function(){
             event.stopPropagation();
             $(".box-panel").animate({ "right": "0px" }, 300);
@@ -189,11 +188,14 @@ themeManager.setTheme(CustomTheme);
 	},
         search:function(e){
 
-            var txt = e.target.value;
-            var r=generateFilter(txt);
-            var c =[ r ];
+            var txt = e.target.value.split(",");
+            var c =[];
+            for(var i = 0;i<txt.length;i++){
+                var r=generateFilter(txt[i]);
+                if(r != undefined)c.push(r);
+            }
             this.setState({
-                filters : r == undefined ? [] : c
+                filters : c
             });
         },
         logout:function(){
@@ -202,13 +204,12 @@ themeManager.setTheme(CustomTheme);
         showNav:function(e){
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
-            console.log(this.refs.userMenu.getDOMNode());
+            e.nativeEvent.stopPropagation();
           $(this.refs.userMenu.getDOMNode()).css("visibility","visible");
           $(this.refs.userMenu.getDOMNode()).animate({opacity:1},200);
         },
         render: function(){
 
-            console.log(this.props.box);
             var mainStyle={
                 position:"relative",
                 width:"100%",
@@ -216,13 +217,15 @@ themeManager.setTheme(CustomTheme);
             };
             var leftNav={
                 position:"absolute",
-                top:"100px",
+                top:"40px",
                 right:30,
-                width:"270px"
+                width:"270px",
+                marginTop:"10px",
+                padding:"10px"
             };
             var containerStyle ={
                 position:"absolute",
-                top:"100px",
+                top:"40px",
                 bottom:0,
                 right:"300px",
                 left:0,
@@ -234,34 +237,48 @@ themeManager.setTheme(CustomTheme);
             ];
 
             return (
+
                 <div style={mainStyle}>
 
-<AppBar
+                <AppBar
                         style={
                             {
-                                height:"40px"
+                                height:"40px",
+                                position:"fixed",
+                                top:0,
+                                left:0,
+                                right:0
                             }
                         }
                         title={this.props.data.name}
                      iconElementLeft={<IconButton iconClassName="material-icons" onClick={this.onHome}>arrow_back</IconButton>}
                      iconElementRight={<FlatButton label={user} onClick={this.showNav}/>}>
                     </AppBar>
-                    <div>
-                        <RaisedButton style={{float:"left",margin:"20px"}} label="Add new item" primary={true} onClick={this.addItem} />
-                        <TextField onKeyUp={this.search} hintText="Search" style={{float:"right",margin:"20px"}}/>
-
+                    <div style={{marginTop:"70px"}}>
+                        <RaisedButton style={{float:"left",marginLeft:"20px"}} label="Add new item" primary={true} onClick={this.addItem} />
+                        <TextField onKeyUp={this.search} hintText="Search" style={{width:"250px",float:"right",marginRight:"40px"}}/>
                     </div>
 
                     <div style={leftNav}>
-                        <Paper style={{width:"100%"  ,margin:"10px" , padding:"10px",marginTop:"20px"}}>
-                             <SideBarHeader/>
-                        </Paper>
-                        <Paper style={{width:"100%"  ,margin:"10px" , padding:"10px"}}>
-                            <MemberList style={{paddingTop:"0px"}} members={box.members}/>
+                        <Tabs>
+                            <Tab label="Info">
+                                <Paper style={{width:"100%"   , padding:"10px"}}>
+                                 <SideBarHeader/>
                             </Paper>
+                            </Tab>
+                            <Tab label="Members">
+                                <Paper style={{width:"100%"   , padding:"10px"}}>
+                                        <MemberList style={{paddingTop:"0px"}} members={box.members}/>
+                                </Paper>
+                            </Tab>
+                            <Tab label="Settings">
+
+                            </Tab>
+                            </Tabs>
+
                     </div>
                     <div style={containerStyle}>
-                        <BoxItemList data={this.state.items} structure={box.structure} filters={this.state.filters}/>
+                        <BoxItemList data={this.state.items} structure={box.structure} filters={this.state.filters} color={CustomTheme.getPalette().primary1Color}/>
                    </div>
 
                     <UserMenu ref="userMenu" logout={this.logout} color={CustomTheme.getPalette().primary1Color}/>
@@ -310,19 +327,17 @@ $(document).ready(function(){
 
 
 
-    $(document).click(function(){
-       $(".user-menu").animate({opacity:0} , 500 , function(){
-           $(".user-menu").css("visibility","collapsed");
-       });
-    });
+    //$(document).click(function(){
+    //   $(".user-menu").animate({opacity:0} , 500 , function(){
+    //       $(".user-menu").css("visibility","collapse");
+    //   });
+    //});
 
 
 
     var base =$("#base");
 
-    console.log(themeManager.getCurrentTheme());
 
-    console.log(box);
     React.render(
         <BoxPage box={box} filter="" data={box}/>,
         document.getElementById('base'));
@@ -381,33 +396,16 @@ var SideBarHeader = React.createClass({
             }.bind(this)
         )
     },
-    addMember:function(e){
-      if(e.keyCode == 13) {
-            $.post("/contributor/",
-                {
-                    "csrfmiddlewaretoken" : getCookie('csrftoken'),
-                     username : e.target.value,
-                     id : box._id["$oid"]
-                },
-                function(e){
-                    box.members.push(e);
-                    React.render(
-                      <MemberList members={box.members}/>,
-                      document.getElementById('contributors')
-                    );
-
-                }
-            );
-        }
-    },
     render:function(){
 
                 return(
                     <div style={{}}>
+
                         <h1 className="side-panel-header" style={{
                         "text-align":"center",color:CustomTheme.getPalette().primary1Color , fontSize:"24pt"
                         }}>{ box.name.toUpperCase()  }</h1>
-                        <h4  style={{"text-align":"center",paddingBottom:"20px" }}>CREATED BY <span style={{color:CustomTheme.getPalette().primary1Color}}>@{this.state.name.toUpperCase()}</span></h4>
+                        <h4  style={{"text-align":"center",paddingBottom:"20px" }}>Created by <span style={{color:CustomTheme.getPalette().primary1Color}}>@{this.state.name}</span></h4>
+                        <h4  style={{"text-align":"center",paddingBottom:"20px" }}>Contains <span style={{color:CustomTheme.getPalette().primary1Color}}>{box._data.length}</span> items</h4>
 
                     </div>
                 )
@@ -418,17 +416,46 @@ var MemberList = React.createClass({
     componentDidMount:function(){
 
     },
+    addMember:function(e){
+      if(e.keyCode == 13) {
+          $.ajax({
+              type: "POST",
+              url: "/contributor/",
+              data: {
+                    "csrfmiddlewaretoken" : getCookie('csrftoken'),
+                     username : e.target.value,
+                     id : box._id["$oid"]
+                },
+              success: function(e){
+                    box.members.push(e);
+                    React.render(
+                      <MemberList members={box.members}/>,
+                      document.getElementById('contributors')
+                    );
+                },
+              error:function(){
+                    console.log("nay");
+                    this.refs.error.show();
+                }.bind(this)
+            });
+        }
+    },
     render:function(){
         var content = this.props.members.map(function(item){
             return (
                 <MemberItem id={item} key={item}/>
             )
         });
-        console.log(content);
         return (
-            <div><h4 style={{color:"gray" ,textAlign:"center"}}>MEMBERS</h4>
-                        <TextField floatingLabelText="Add member by username" onKeyDown={this.addMember}/>
-            <div>{content}</div></div>
+            <div>
+                <Snackbar
+                    autoHideDuration={1500}
+                                ref="error"
+                                message="Couldn't find this member"/>
+                <h4 style={{color:"gray" ,textAlign:"center"}}>MEMBERS</h4>
+                <TextField style={{width:"100%"}} floatingLabelText="Add member by username" onKeyDown={this.addMember}/>
+                <div>{content}</div>
+            </div>
         );
     }
 });
@@ -466,7 +493,7 @@ function generateFilter(input){
         target : "",
         type   : "",
         param  : ""
-    }
+    };
     var textFilter = /(.*) is (.*)/g;
     var textMatches = textFilter.exec(input);
     if(textMatches != null && textMatches.length > 0){
