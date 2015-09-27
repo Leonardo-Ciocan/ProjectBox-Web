@@ -144,7 +144,7 @@ def delete_item(request):
 def add_contributor(request):
     print(request.POST)
     user = User.objects.filter(username=request.POST["username"])
-    print(user)
+    print(request.POST["username"])
     uid = None
     if user.exists():
         uid = user[0].id

@@ -4,6 +4,8 @@ var Slider = require('material-ui/lib/slider');
 var Checkbox = require('material-ui/lib/checkbox');
 var DatePicker = require('material-ui/lib/date-picker/date-picker');
 var DropDownMenu = require('material-ui/lib/drop-down-menu');
+var StarRating = require("./react-star-rating");
+var TagsInput = require('./tags');
 
 var BoxItemRow = React.createClass({
         save:function(e){
@@ -65,10 +67,11 @@ var BoxItemRow = React.createClass({
                 //$("#"+this.props.id).css("background-image" ,"url("+this.props.data[this.props.row.name.toLowerCase()] +")");
           }
           $.material.init();
-
-
-
       },
+    componentDidMount:function(){
+        console.log(this.refs);
+       //this.refs.rating.state.editing = true;
+    },
     saveRange:function(e,value){
             var payload = {};
             console.log(e);
@@ -115,6 +118,35 @@ var BoxItemRow = React.createClass({
                 payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
                 $.post("/box/" , payload);
             }
+    },
+    saveRating:function(e,data){
+            var payload = {};
+            var value = data.rating;
+            payload[this.props.row.name.toLowerCase()] = value;
+
+            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
+                this.props.data[this.props.row.name.toLowerCase()] = value;
+                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
+                payload["item_id"]= this.props.data["_id"]["$oid"];
+                payload["id"] = box._id["$oid"];
+                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
+                $.post("/box/" , payload);
+            }
+    },
+    saveTags:function(arr){
+            var payload = {};
+            var value = JSON.stringify(arr);
+            payload[this.props.row.name.toLowerCase()] = value;
+
+            if(this.props.data[this.props.row.name.toLowerCase()] !== value){
+                this.props.data[this.props.row.name.toLowerCase()] = value;
+                $("#"+this.props.id).attr("src" ,this.props.data[this.props.row.name.toLowerCase()]);
+                payload["item_id"]= this.props.data["_id"]["$oid"];
+                payload["id"] = box._id["$oid"];
+                payload["csrfmiddlewaretoken"] = getCookie('csrftoken');
+                $.post("/box/" , payload);
+            }
+
     },
       render:function() {
 
@@ -236,6 +268,22 @@ var BoxItemRow = React.createClass({
 
                       </div>
                   </label>
+          }
+          else if(this.props.row.type.toLowerCase() === "rating") {
+                    elem = <div style={{width: "100%",overflow:"hidden"}}>
+                                <label style={{width: "100%"}}>
+                                     {name}
+                                </label>
+                                <StarRating style={{textAlign:"center",display:"block"}} editing={true} ref="rating"  size="lg" onRatingClick={this.saveRating} rating={content == undefined ? 0 : parseFloat(content)} />
+                           </div>;
+          }
+          else if(this.props.row.type.toLowerCase() === "tags") {
+                    elem = <div style={{width: "100%",overflow:"hidden"}}>
+                                <label style={{width: "100%"}}>
+                                     {name}
+                                </label>
+                        <TagsInput  ref='tags' onChange={this.saveTags} defaultValue={content == undefined ? [] :JSON.parse(content)} tagColor={this.props.color} tagTextColor="#fff" tagBorderColor="#000"/>
+                    </div>;
           }
 
         return (

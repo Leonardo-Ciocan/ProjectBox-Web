@@ -2,9 +2,11 @@ var React = require("react");
 console.log("loading");
     var AppBar = require('material-ui/lib/app-bar');
     var FlatButton = require('material-ui/lib/flat-button');
+    var RaisedButton = require('material-ui/lib/raised-button');
     var UserMenu = require('./UserMenu');
     var Paper = require("material-ui/lib/paper");
     var IconButton = require('material-ui/lib/icon-button');
+    var TagsInput = require('./tags');
 
 var ThemeManager =  require('material-ui/lib/styles').ThemeManager;
     var themeManager = new ThemeManager();
@@ -124,7 +126,7 @@ var CollumnList = React.createClass({
             };
         },
     getInitialState:function(){
-        return {items:data , color:"green"};
+        return {items:data , color:CustomTheme.getPalette().primary1Color , text:""};
     },
     add_new:function(e){
         data.push({type:"Text" , name:""});
@@ -136,12 +138,29 @@ var CollumnList = React.createClass({
     },
     onCreate:function(){
 
-        this.props.onCreate(this.state.items,this.state.color);
+        var e = this.state.items;
+        var c = this.state.color;
+        var package = {};
+        package.name = $("#box-name").val();
+        e = jQuery.grep(e , function(v,i){
+            console.log(v);
+            return v.name != "";
+        });
+        package["csrfmiddlewaretoken"] = getCookie('csrftoken');
+        package["structure"] = JSON.stringify(e);
+        package["color"] = c;
+        $.post("",package,function(){
+           window.location = "/";
+        });
     },
     onColor:function(col){
         console.log(col);
         this.setState({color:col});
     },
+    nameChanged:function(e){
+        this.setState({text:e.target.value});
+    }
+    ,
    render:function(){
        console.log(CustomTheme.getPalette().primary1Color);
        var i = 0;
@@ -156,9 +175,10 @@ var CollumnList = React.createClass({
         );
        return (
             <Paper style={{margin:"10px",padding:"10px",overflow:"hidden"}}>
+                <h1 className="create-line">I want to keep track of <input type="text" id="box-name" style={{color:this.state.color}} onInput={this.nameChanged}/></h1>
                 <ColorPicker onColor={this.onColor}/>
                 {collumns}
-                <button id="btn-create" className="btn btn-primary" onClick={this.onCreate}>Create</button>
+                <RaisedButton backgroundColor={this.state.color} labelColor="white" style={{float:"right"}} label={"CREATE "+this.state.text+" BOX"} onClick={this.onCreate}></RaisedButton>
             </Paper>
        )
    }
@@ -187,8 +207,8 @@ var Collumn = React.createClass({
     saveName: function (e) {
         this.props.collumn.name = e.target.value;
     },
-    saveChoices:function(e){
-        this.props.collumn.choices = e.target.value.split(",");
+    saveChoices:function(arr){
+        this.props.collumn.choices = arr;
     },
     saveMin:function(e){
         this.props.collumn.min = e.target.value;
@@ -214,6 +234,8 @@ var Collumn = React.createClass({
                                <option value="Choice">choice</option>
                                <option value="Range">number between</option>
                                <option value="Date">date</option>
+                               <option value="Rating">rating</option>
+                               <option value="Tags">tag list</option>
                             </select>;
 
 
@@ -223,9 +245,16 @@ var Collumn = React.createClass({
                        <h1 className="create-line line-small">Each one has a
                            {options}
                            called <input placeholder="name" id={id+"-name"} type="text" onFocus={this.onAdd}  onChange={this.saveName} style={{color:CustomTheme.getPalette().primary1Color}}/>
-                            which can be : <input placeholder="e.g Easy,Medium,Hard" id={id+"-choice"} type="text" onChange={this.saveChoices} style={{color:CustomTheme.getPalette().primary1Color}}/></h1>
+                            which can be <TagsInput style={{margin:"10px" , width:"300px"}}  ref='tags' onChange={this.saveChoices} placeholder="Enter a choice then press enter" tagColor={CustomTheme.getPalette().primary1Color} tagTextColor="#fff" tagBorderColor="#000"/>
+</h1>
                    </div>
-       }else if (this.state.type.toLowerCase() == "text" ||this.state.type.toLowerCase() == "date" || this.state.type.toLowerCase() == "number" || this.state.type.toLowerCase() == "image" || this.state.type.toLowerCase() == "checkbox"){
+       }else if (this.state.type.toLowerCase() == "text" ||
+                 this.state.type.toLowerCase() == "rating"||
+                 this.state.type.toLowerCase() == "date" ||
+                 this.state.type.toLowerCase() == "tags" ||
+                 this.state.type.toLowerCase() == "number" ||
+                 this.state.type.toLowerCase() == "image" ||
+                 this.state.type.toLowerCase() == "checkbox"){
            elem  = <div>
                <h1 className="create-line line-small">Each one has a
                   {options}
@@ -251,18 +280,7 @@ var Collumn = React.createClass({
 
 
 function create_box(e,c){
-    var package = {};
-    package.name = $("#box-name").val();
-    e = jQuery.grep(e , function(v,i){
-        console.log(v);
-        return v.name != "";
-    });
-    package["csrfmiddlewaretoken"] = getCookie('csrftoken');
-    package["structure"] = JSON.stringify(e);
-    package["color"] = c;
-    $.post("",package,function(){
-       window.location = "/";
-    });
+
 }
 React.render(
   <CollumnList onCreate={create_box}/>,

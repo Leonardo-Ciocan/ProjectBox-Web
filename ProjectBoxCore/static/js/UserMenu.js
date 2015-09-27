@@ -12,16 +12,13 @@ var UserMenu = React.createClass({
    render:function(){
        return (<div ref="menu" className="user-menu" style={{background: this.props.color , padding:"10px"}} onMouseLeave={this.mouseOut}>
 
-                                    <div className="user-menu-logout">
-                                    SETTING
-                                    </div>
-                                     <div className="user-menu-logout">
+                                     <a href="mailto:leonardo.ciocan@outlook.com" className="user-menu-logout">
                                         FEEDBACK
-                                    </div>
+                                    </a>
 
-                                    <div onClick={this.logout} className="user-menu-logout">
+                                    <a onClick={this.logout} className="user-menu-logout">
                                         LOG OUT
-                                    </div>
+                                    </a>
               </div>);
    }
 });

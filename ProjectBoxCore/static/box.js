@@ -213,22 +213,22 @@ themeManager.setTheme(CustomTheme);
             var mainStyle={
                 position:"relative",
                 width:"100%",
-                height:"100%"
+                height:"100%",
+                paddingTop:"70px"
             };
             var leftNav={
                 position:"absolute",
-                top:"40px",
-                right:30,
+                top:"50px",
+                left:10,
                 width:"270px",
                 marginTop:"10px",
                 padding:"10px"
             };
             var containerStyle ={
                 position:"absolute",
-                top:"40px",
+                top:"100px",
                 bottom:0,
-                right:"300px",
-                left:0,
+                left:"300px",
                 padding:"10px"
             };
             var iconMenuItems = [
@@ -254,27 +254,34 @@ themeManager.setTheme(CustomTheme);
                      iconElementLeft={<IconButton iconClassName="material-icons" onClick={this.onHome}>arrow_back</IconButton>}
                      iconElementRight={<FlatButton label={user} onClick={this.showNav}/>}>
                     </AppBar>
-                    <div style={{marginTop:"70px"}}>
-                        <RaisedButton style={{float:"left",marginLeft:"20px"}} label="Add new item" primary={true} onClick={this.addItem} />
+                    <div style={{}}>
+                        <RaisedButton style={{float:"left",marginLeft:"320px"}} label="Add new item" primary={true} onClick={this.addItem} />
                         <TextField onKeyUp={this.search} hintText="Search" style={{width:"250px",float:"right",marginRight:"40px"}}/>
                     </div>
 
                     <div style={leftNav}>
-                        <Tabs>
-                            <Tab label="Info">
-                                <Paper style={{width:"100%"   , padding:"10px"}}>
+                            <div className="tab" style={{background:CustomTheme.getPalette().primary1Color}}>
+                                <h1>Info</h1>
+                                </div>
+                        <Paper style={{width:"100%"   , padding:"10px"}}>
+
+
                                  <SideBarHeader/>
                             </Paper>
-                            </Tab>
-                            <Tab label="Members">
-                                <Paper style={{width:"100%"   , padding:"10px"}}>
+
+                                <div className="tab" style={{background:CustomTheme.getPalette().primary1Color,marginTop:"20px"}}>
+                                <h1>Members</h1>
+
+                                </div>
+                                <Paper style={{width:"100%"   , padding:"10px",paddingTop:"0"}}>
+
                                         <MemberList style={{paddingTop:"0px"}} members={box.members}/>
                                 </Paper>
-                            </Tab>
-                            <Tab label="Settings">
 
-                            </Tab>
-                            </Tabs>
+
+
+
+
 
                     </div>
                     <div style={containerStyle}>
@@ -402,10 +409,11 @@ var SideBarHeader = React.createClass({
                     <div style={{}}>
 
                         <h1 className="side-panel-header" style={{
+                        fontWeight:"bold",
                         "text-align":"center",color:CustomTheme.getPalette().primary1Color , fontSize:"24pt"
                         }}>{ box.name.toUpperCase()  }</h1>
-                        <h4  style={{"text-align":"center",paddingBottom:"20px" }}>Created by <span style={{color:CustomTheme.getPalette().primary1Color}}>@{this.state.name}</span></h4>
-                        <h4  style={{"text-align":"center",paddingBottom:"20px" }}>Contains <span style={{color:CustomTheme.getPalette().primary1Color}}>{box._data.length}</span> items</h4>
+                        <h4  style={{"text-align":"center",paddingBottom:"20px" }}>Created by <span style={{color:CustomTheme.getPalette().primary1Color,fontWeight:"bold"}}>{this.state.name}</span></h4>
+                        <h4  style={{"text-align":"center",paddingBottom:"20px" }}>Contains <span style={{color:CustomTheme.getPalette().primary1Color,fontWeight:"bold"}}>{box._data.length}</span> items</h4>
 
                     </div>
                 )
@@ -429,9 +437,9 @@ var MemberList = React.createClass({
               success: function(e){
                     box.members.push(e);
                     React.render(
-                      <MemberList members={box.members}/>,
-                      document.getElementById('contributors')
-                    );
+                    <BoxPage box={box} filter="" data={box}/>,
+                    document.getElementById('base'));
+                    e.target.value = "";
                 },
               error:function(){
                     console.log("nay");
@@ -452,7 +460,7 @@ var MemberList = React.createClass({
                     autoHideDuration={1500}
                                 ref="error"
                                 message="Couldn't find this member"/>
-                <h4 style={{color:"gray" ,textAlign:"center"}}>MEMBERS</h4>
+
                 <TextField style={{width:"100%"}} floatingLabelText="Add member by username" onKeyDown={this.addMember}/>
                 <div>{content}</div>
             </div>
@@ -477,9 +485,9 @@ var MemberItem = React.createClass({
     render:function(){
         var memberStyle={
             padding:"8px",
-            background: CustomTheme.getPalette().primary1Color,
-            color:"white",
-            borderRadius:"5px"
+            color: CustomTheme.getPalette().primary1Color,
+            border:"1px solid " + CustomTheme.getPalette().primary1Color,
+            borderRadius:"0px"
         };
         return (
             <h4 style={memberStyle}>@{this.state.name}</h4>
