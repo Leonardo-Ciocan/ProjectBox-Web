@@ -42,7 +42,7 @@ var BoxItemList = React.createClass({
           console.log("filtering with ");
           console.log(this.props.filters[0]);
       }
-      var cardMax = Math.floor(this.state.width / 250);
+      var cardMax = Math.floor(this.state.width / 200);
                 var cardWidth = this.state.width / cardMax;
                 console.log(cardWidth);
 
